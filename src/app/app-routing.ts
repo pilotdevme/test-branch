@@ -5,18 +5,10 @@ import { OptionsComponent } from './options/options.component';
 import { PopupComponent } from './popup/popup.component';
 import { SampleComponent } from './sample/sample.component';
 
-const routes: Routes = [
+export const routes: Routes = [
+    { path: '', component: PopupComponent },
     { path: 'options', component: OptionsComponent },
     { path: 'popup', component: PopupComponent },
     { path: 'sample', component: SampleComponent }
 ];
 
-@NgModule({
-    imports: [RouterModule.forRoot(routes, { useHash: true })],
-    exports: [RouterModule]
-})
-export class AppRoutingModule {
-
-    //
-
-}

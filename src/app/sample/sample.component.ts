@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, OnInit } from '@angular/core';
 
 /*
  * 'ViewEncapsulation.None' is used to set page body margins to 0 for this component.
@@ -6,15 +6,19 @@ import { Component, ViewEncapsulation } from '@angular/core';
  * remove this parameter.
 */
 @Component({
+    standalone: true,
     selector: 'app-sample',
     templateUrl: './sample.component.html',
     styleUrls: ['./sample.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class SampleComponent {
+export class SampleComponent implements OnInit {
 
     public onBtnClick(): void {
         alert('SampleComponent.onBtnClick() new awork');
+    }
+    ngOnInit(): void {
+       // do something
     }
 
 }

@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
+    standalone: true,
     selector: 'app-popup',
     templateUrl: './popup.component.html',
-    styleUrls: ['./popup.component.scss']
+    styleUrls: ['./popup.component.scss'],
+    imports: []
 })
 export class PopupComponent implements OnInit {
     myTitle = 'project-angular';
