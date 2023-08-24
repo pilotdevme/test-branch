@@ -14,17 +14,17 @@
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
-    "module": "esnext",
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es2022",
+    "target": "es2018",
     "lib": [
-      "es2022",
+      "es2018",
       "dom"
     ],
     "typeRoots": [
       "node_modules/@types"
-    ]
+    ],
+    "esModuleInterop": true
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
@@ -32,4 +32,5 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true
   }
+
 }

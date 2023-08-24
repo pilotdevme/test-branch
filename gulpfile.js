@@ -53,3 +53,7 @@ gulp.task('background-script', function () {
 gulp.task('default', gulp.series(['ng-build', 'content-script', 'background-script'], function (done) {
     done();
 }));
+
+gulp.task('watch', function () {
+    gulp.watch('src', gulp.series('default'));
+});
