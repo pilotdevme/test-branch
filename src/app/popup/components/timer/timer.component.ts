@@ -6,8 +6,8 @@ import { PopupService } from '../../../services/popup.service';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import moment from "moment";
 import { interval,Subscription } from 'rxjs';
-import { ISelectedValues, IList, ITime, ITimeDifference, ITimeEntry } from './timer.interface';
-import { enumChangeList, enumList, enumTime, enumTimeDifference } from './timer.enum';
+import { ISelectedValues, IList, ITime, ITimeDifference, ITimeEntry, ILocalData } from './timer.interface';
+import { enumChangeList, enumList, enumTime, enumTimeDifference, initialTimerValue } from './timer.enum';
 import { ChromeStorageService } from 'src/app/services/chromeService.service';
 
 
@@ -28,11 +28,11 @@ export class TimerComponent implements OnInit {
     public note: string = '';
     public selectedValues: ISelectedValues = enumChangeList;
     public timerRunning: boolean = false;
-    public timer: string = '00:00:00';
+    public timer: string = initialTimerValue;
 
     private interval_subscription !: Subscription;
     private timeDifference: ITimeDifference = enumTimeDifference;
-    private getLocData: any = '';
+    private getLocData: ILocalData = {};
     private time: ITime = enumTime;
 
 
@@ -42,7 +42,7 @@ export class TimerComponent implements OnInit {
     getTimers() {
         try {
             this.popup_service.getTimeEntries().subscribe((response: any) => {
-                this.timeEntries = response.slice(0, 4);
+                this.timeEntries = response;
             });
         }
         catch (e) { }
@@ -64,7 +64,7 @@ export class TimerComponent implements OnInit {
             this.chrome_service.setStorageData({ running_time: this.timerRunning });
             this.chrome_service.setStorageData({ timer_start_time: response?.startTimeLocal });
             if (response) {
-                this.interval_subscription = interval(1000).subscribe(() => this.Timer());
+                this.interval_subscription = interval(1000).subscribe(() => this.updateTimer());
             }
         });
     }
@@ -81,13 +81,9 @@ export class TimerComponent implements OnInit {
 
             if (this.timerRunning === false) {
                 this.interval_subscription.unsubscribe();
-                this.timer = '00.00.00';
-                this.time.hours = 0;
-                this.time.seconds = 0;
-                this.time.minutes = 0;
-                this.selectedValues.project = '';
-                this.selectedValues.task = '';
-                this.selectedValues.typeOfWork = '';
+                this.timer = initialTimerValue;
+                this.time = enumTime;
+                this.selectedValues = enumChangeList;
             }
         });
         this.getTimers()
@@ -187,15 +183,14 @@ export class TimerComponent implements OnInit {
         const milliseconds = currentDate.getMilliseconds();
 
         const formattedDateTime = `${hours}:${minutes}:${seconds}.${milliseconds}`;
-
-        let timer_timer_start_time: number = this.getLocData?.timer_start_time ? this.getLocData?.timer_start_time : ''; // Replace with your start time
+        let timer_timer_start_time: number = this.getLocData?.timer_start_time || 0; // Replace with your start time
         let timer_end_time: string = formattedDateTime; // Replace with your end time
 
         return this.timeDifferenceInterval(timer_timer_start_time, timer_end_time);
     }
 
     /*timer counted function*/
-    private Timer(): void {
+    private updateTimer(): void {
         this.time.seconds++;
         if (this.time.seconds >= 60) {
             this.time.seconds = 0;
@@ -218,23 +213,23 @@ export class TimerComponent implements OnInit {
         this.getLocData = await this.chrome_service.getStorageData();
 
         /* stored time boolean */
-        this.timerRunning = this.getLocData?.running_time
+        this.timerRunning = this.getLocData?.running_time ?? false
 
         /* selected project value */
         if (this.selectedValues.project == '') {
-            let stored_project_value = this.getLocData?.select_project_value;
+            let stored_project_value = this.getLocData?.select_project_value ?? '';
             this.selectedValues.project = stored_project_value;
         }
 
         /* selected task value */
         if (this.selectedValues.task == '') {
-            let stored_task_value = this.getLocData?.select_task_value;
+            let stored_task_value = this.getLocData?.select_task_value ?? '';
             this.selectedValues.task = stored_task_value;
         }
 
         /* selected work type value */
         if (this.selectedValues.typeOfWork == '') {
-            let stored_workType_value = this.getLocData?.select_workType_value;
+            let stored_workType_value = this.getLocData?.select_workType_value ?? '';
             this.selectedValues.typeOfWork = stored_workType_value;
         }
 
@@ -245,7 +240,7 @@ export class TimerComponent implements OnInit {
                 this.time.hours = this.timeDifference.hour;
                 this.time.minutes = this.timeDifference.minute;
                 this.time.seconds = this.timeDifference.second;
-                this.interval_subscription = interval(1000).subscribe(() => this.Timer());
+                this.interval_subscription = interval(1000).subscribe(() => this.updateTimer());
             }
         }
 

@@ -38,11 +38,19 @@ export interface ITimeEntry {
 }
 
 export interface IStartTimeBody {
-        isBillable: boolean,
-        isBilled: boolean,
-        taskId: string,
-        projectId: string,
-        note: string,
-        typeOfWorkId: string,
-        timezone: string
+    isBillable: boolean,
+    isBilled: boolean,
+    taskId: string,
+    projectId: string,
+    note: string,
+    typeOfWorkId: string,
+    timezone: string
+}
+export interface ILocalData {
+    select_project_value?: string,
+    select_task_value?: string,
+    select_workType_value?: string,
+    running_time?: boolean,
+    timer_start_time?: number,
+    
 }

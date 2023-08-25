@@ -24,3 +24,5 @@ export const enumTimeDifference : ITimeDifference = {
     minute:0,
     second:0
 }
+
+export const initialTimerValue: string = '00:00:00'
