@@ -3,6 +3,7 @@ import { environment } from 'src/environments/environment';
 import { LoginComponent } from './components/auth/auth.component';
 import { TimerComponent } from './components/timer/timer.component';
 import { NgIf, NgTemplateOutlet } from '@angular/common';
+import { ChromeStorageService } from '../services/chromeService.service';
 
 @Component({
     standalone: true,
@@ -12,28 +13,38 @@ import { NgIf, NgTemplateOutlet } from '@angular/common';
     imports: [LoginComponent, TimerComponent, NgIf, NgTemplateOutlet]
 })
 export class PopupComponent implements AfterViewInit {
-    public login = false;
+    public isLoggedIn : boolean = false;
 
-    toggleLogin(value: any) {
+    constructor(private chrome_service: ChromeStorageService) { }
+    
+    /* login button click listener */ 
+    toggleLogin(value: boolean | string) {
+
+        //open awork login page in new tab
         chrome.tabs.create({ url: `${environment.awork.url}/accounts/authorize?client_id=${environment.awork.clientId}&redirect_uri=${environment.awork.redirectUrl}&scope=${environment.awork.scope}&response_type=code&grant_type=authorization_code` })
-        chrome.storage.local.set({ token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMWYzZDk2OC1mZTdmLTRlM2YtYjEzZC0yNWMyODRmZDIzZWQiLCJuYW1lIjoicmF2ZXJtYS5tZUBnbWFpbC5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJyYXZlcm1hLm1lQGdtYWlsLmNvbSIsImlpZCI6IjExZjNkOTY4LWZlN2YtNGUzZi1iMTNkLTI1YzI4NGZkMjNlZCIsIndpZCI6IjNjOWRiZjRlLWI5ZTQtNDg4NS04ODg5LWNkMzM5NjQ1NjBjYyIsInVpZCI6IjhiMGVlNWE2LTQwZDQtNDA1Ny1hMzE5LWFlMDAzNjA1NzRlNSIsInNjb3BlIjoib2ZmbGluZV9hY2Nlc3MiLCJhenAiOiJhd29yay1leHQiLCJ0b2tlbl91c2FnZSI6ImFjY2Vzc190b2tlbiIsImNmZF9sdmwiOiJwcml2YXRlIiwibmJmIjoxNjkyNzcyMjgwLCJleHAiOjE2OTI4NTg2ODAsImlzcyI6Imh0dHBzOi8vYXBpLmF3b3JrLmlvLyIsImF1ZCI6ImF3b3JrLmlvIn0.-UFxILCmCA6utz71XFtkP3VNrQL_gHkvmId9QwcKYSM' })
-        this.login = true;
+
+        // save token in extension local storage
+        this.chrome_service.setStorageData({ token: `${environment.awork.token}` })
+        this.isLoggedIn = true;
     }
-    toggleSignup(value: any) {
-        console.log("login", this.login)
-        this.login = true
+
+    /* signUp button click listener */ 
+    toggleSignup(value: boolean | string) {
+
+        //temporarily just logging in.
+        this.isLoggedIn = true
     }
 
     ngAfterViewInit(): void {
         this.fetchToken()
     }
 
+    /* fetch token from local storage  */
     async fetchToken() {
-        let data: any = await chrome.storage.local.get();
+        let data: {token: string}  = await this.chrome_service.getStorageData();
+
         if (data?.token) {
-            console.log("data", JSON.stringify(data.token))
-            this.login = true
-            console.log(this.login, "login 1")
+            this.isLoggedIn = true
         }
     }
 }

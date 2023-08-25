@@ -1,14 +1,14 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Component, OnInit } from '@angular/core';
-import { PopupService } from '../../popup.service';
+import { FormsModule } from '@angular/forms';
 import { NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTableModule } from '@angular/material/table';
-import moment from "moment";
+import { PopupService } from '../../../services/popup.service';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { interval } from 'rxjs';
-import { FormsModule } from '@angular/forms';
+import moment from "moment";
+import { interval,Subscription } from 'rxjs';
+import { ISelectedValues, IList, ITime, ITimeDifference, ITimeEntry } from './timer.interface';
+import { enumChangeList, enumList, enumTime, enumTimeDifference } from './timer.enum';
+import { ChromeStorageService } from 'src/app/services/chromeService.service';
 
 
 @Component({
@@ -17,32 +17,28 @@ import { FormsModule } from '@angular/forms';
     templateUrl: './timer.component.html',
     styleUrls: ['./timer.component.scss'],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [NgFor, NgIf, HttpClientModule, MatButtonModule, MatIconModule, MatTableModule, MatProgressBarModule, FormsModule, NgTemplateOutlet],
+    imports: [NgFor, NgIf, HttpClientModule, MatProgressBarModule, FormsModule, NgTemplateOutlet],
     providers: [PopupService],
 })
 
 
 export class TimerComponent implements OnInit {
-    public listWorkTypes: any = [];
-    public listProjects: any = [];
-    public listTasks: any = [];
-    public timeEntries: any = [];
+    public list: IList = enumList;
+    public timeEntries: ITimeEntry[] = [];
     public note: string = '';
+    public selectedValues: ISelectedValues = enumChangeList;
     public timerRunning: boolean = false;
-    public typeOfWork: string = '';
-    public project: string = '';
-    public isBillable: boolean = false;
-    public task: string = '';
     public timer: string = '00:00:00';
-    public hours: number = 0;
-    public minutes: number = 0;
-    public seconds: number = 0;
-    public interval_subscription: any = '';
-    
+
+    private interval_subscription !: Subscription;
+    private timeDifference: ITimeDifference = enumTimeDifference;
     private getLocData: any = '';
+    private time: ITime = enumTime;
 
-    constructor(private popup_service: PopupService) { }
 
+    constructor(private popup_service: PopupService, private chrome_service: ChromeStorageService) { }
+
+    /* get project details and timer */
     getTimers() {
         try {
             this.popup_service.getTimeEntries().subscribe((response: any) => {
@@ -52,155 +48,139 @@ export class TimerComponent implements OnInit {
         catch (e) { }
     }
 
-    callApi() {
-        this.getTimers()
+    /* start time interval function */
+    startTimer() {
+        let body = {
+            "isBillable": this.selectedValues.isBillable,
+            "isBilled": false,
+            "taskId": this.selectedValues.task,
+            "projectId": this.selectedValues.project,
+            "note": this.note,
+            "typeOfWorkId": this.selectedValues.typeOfWork,
+            "timezone": Intl.DateTimeFormat().resolvedOptions().timeZone
+        };
+        this.popup_service.startTimeEntry(body).subscribe((response: any) => {
+            this.timerRunning = true
+            this.chrome_service.setStorageData({ running_time: this.timerRunning });
+            this.chrome_service.setStorageData({ timer_start_time: response?.startTimeLocal });
+            if (response) {
+                this.interval_subscription = interval(1000).subscribe(() => this.Timer());
+            }
+        });
     }
-
 
     /*stop time interval function*/
     stopTimer() {
         this.popup_service.endTimeEntry().subscribe((response: any) => {
             this.timerRunning = false;
-            chrome.storage.local.set({ running_time: this.timerRunning });
-            chrome.storage.local.set({ start_time: ' ' });
-            chrome.storage.local.set({ select_workType_value: ' ' });
-            chrome.storage.local.set({ select_project_value: ' ' });
-            chrome.storage.local.set({ select_task_value: ' ' });
+            this.chrome_service.setStorageData({ running_time: this.timerRunning });
+            this.chrome_service.setStorageData({ timer_start_time: ' ' });
+            this.chrome_service.setStorageData({ select_workType_value: ' ' });
+            this.chrome_service.setStorageData({ select_project_value: ' ' });
+            this.chrome_service.setStorageData({ select_task_value: ' ' });
 
             if (this.timerRunning === false) {
                 this.interval_subscription.unsubscribe();
                 this.timer = '00.00.00';
-                this.hours = 0
-                this.seconds = 0
-                this.minutes = 0
-                this.project = ''
-                this.task = ''
-                this.typeOfWork = ''
+                this.time.hours = 0;
+                this.time.seconds = 0;
+                this.time.minutes = 0;
+                this.selectedValues.project = '';
+                this.selectedValues.task = '';
+                this.selectedValues.typeOfWork = '';
             }
         });
+        this.getTimers()
     }
 
-    /*start time interval function*/
-    startTimer() {
-        let body = {
-            "isBillable": this.isBillable,
-            "isBilled": false,
-            "taskId": this.task,
-            "projectId": this.project,
-            "note": this.note,
-            "typeOfWorkId": this.typeOfWork,
-            "timezone": Intl.DateTimeFormat().resolvedOptions().timeZone
-        };
-        this.popup_service.startTimeEntry(body).subscribe((response: any) => {
-            this.timerRunning = true
-            chrome.storage.local.set({ running_time: this.timerRunning });
-            chrome.storage.local.set({ start_time: response?.startTimeLocal });
-            if (response) {
-                this.interval_subscription = interval(1000).subscribe(() => this.updateTimer());
-            }
-        });
-    }
-
-    /*get work types*/
+    /* get work types */
     getWorkTypes() {
         this.popup_service.getTypeOfWork().subscribe((response: any) => {
-            this.listWorkTypes = response
+            this.list.workTypes = response
         });
     }
 
-    /*get projects list*/
+    /* get projects list */
     getProjects() {
         this.popup_service.getProjects().subscribe((response: any) => {
-            this.listProjects = response
+            this.list.projects = response
         });
     }
 
-    /*get task lists according to projects list*/
+    /* get task lists according to projects list */
     getTasks() {
-        this.popup_service.getTasks(this.project).subscribe((response: any) => {
-            this.listTasks = response
+        this.popup_service.getTasks(this.selectedValues.project).subscribe((response: any) => {
+            this.list.tasks = response
         });
     }
 
-    /*work type list change data*/
-    typeOfWorkChange(event: any) {
-        this.typeOfWork = event.target.value;
-        chrome.storage.local.set({ select_workType_value: this.typeOfWork });
-    }
-
-    /*project list change data*/
-    projectChange(event: any) {
-        this.project = event.target.value;
-        chrome.storage.local.set({ select_project_value: this.project });
-
-        this.isBillable = this.listProjects?.find((project: any) => project.id == this.project)?.isBillableByDefault || false
-        this.getTasks()
-    }
-
-    /*task list change*/
-    taskChange(event: any) {
-        this.task = event.target.value;
-        chrome.storage.local.set({ select_task_value: this.task });
-    }
-     
+    /* current time note */
     noteChange(event: any) {
         this.note = event.target.value
     }
 
+    /* project list change data */
+    projectChange(event: any) {
+        this.selectedValues.project = event.target.value;
+        this.chrome_service.setStorageData({ select_project_value: this.selectedValues.project });
+        this.selectedValues.isBillable = this.list.projects?.find((project: any) => project.id == this.selectedValues.project)?.isBillableByDefault || false
+        this.getTasks()
+    }
 
-    /*Date format for project tabel entry*/
-    getDate(v: any) {
-        let formatted_date = moment(v).format("DD MMMM");
+    /* task list change */
+    taskChange(event: any) {
+        this.selectedValues.task = event.target.value;
+        this.chrome_service.setStorageData({ select_task_value: this.selectedValues.task });
+    }
+
+    /* work type list change data */
+    typeOfWorkChange(event: any) {
+        this.selectedValues.typeOfWork = event.target.value;
+        this.chrome_service.setStorageData({ select_workType_value: this.selectedValues.typeOfWork });
+    }
+
+    /* get Date format for project tabel entry */
+    getDate(date: any) {
+        let formatted_date = moment(date).format("DD MMMM");
         return formatted_date;
     }
 
-    /*Time format for project tabel entry*/
-    getTime(v: string) {
-        let formatted_time = v?.substring(0, 5)
+    /* get Time format for project tabel entry */
+    getTime(time: string) {
+        let formatted_time = time?.substring(0, 5)
         return formatted_time;
     }
 
-    /*differnce between start loc time and end loc time interval*/
-    totalRunningTime(v: any) {
-        // Given time values as strings
-        const start_time_str = v?.startTimeLocal;
-        const end_time_str = v?.endTimeLocal;
+    /* get start running interval time to end running interval time */
+    totalTrackingTime(time: any) {
+        /*Given time values as strings*/
+        const timer_start_time_interval = time?.startTimeLocal;
+        const end_time_interval = time?.endTimeLocal;
 
-        // Convert time values to Date objects
-        let start_loc_time: any = new Date(`1970-01-01T${start_time_str}Z`);
-        let end_loc_time: any = new Date(`1970-01-01T${end_time_str}Z`);
+        return this.timeDifferenceInterval(timer_start_time_interval, end_time_interval)
+    }
+
+    /* calculate time difference between start running time interval to end running time interval */
+    timeDifferenceInterval(startTimeIntervalValue: any, endTimeIntervalValue: any) {
+
+        /*Convert time values to Date objects*/
+        let start_loc_time: any = new Date(`1970-01-01T${startTimeIntervalValue}Z`);
+        let end_loc_time: any = new Date(`1970-01-01T${endTimeIntervalValue}Z`);
 
         let timeDifference = Math.abs(start_loc_time - end_loc_time);
 
-        const hoursDifference = Math.floor(timeDifference / 3600000); // 1 hour = 3600000 milliseconds
-        const minutesDifference = Math.floor((timeDifference % 3600000) / 60000); // 1 minute = 60000 milliseconds
+        this.timeDifference.hour = Math.floor(timeDifference / 3600000); // 1 hour = 3600000 milliseconds
+        this.timeDifference.minute = Math.floor((timeDifference % 3600000) / 60000); // 1 minute = 60000 milliseconds
+        this.timeDifference.second = Math.floor(((timeDifference % 3600000) / 1000)); // 1 second = 1000 milliseconds
 
-        return `${hoursDifference}h${minutesDifference}m`
+        return `${this.timeDifference.hour}h ${this.timeDifference.minute}m`
     }
 
-    /*timer counted function*/
-    private updateTimer(): void {
-        this.seconds++;
-        if (this.seconds >= 60) {
-            this.seconds = 0;
-            this.minutes++;
-            if (this.minutes >= 60) {
-                this.minutes = 0;
-                this.hours++;
-            }
-        }
-        this.timer = `${this.formatTime(this.hours)}:${this.formatTime(this.minutes)}:${this.formatTime(this.seconds)}`;
-    }
-
-    private formatTime(timeValue: number): string {
-        return timeValue.toString().padStart(2, '0');
-    }
-
-    /*difference between start timer interval to current time interval*/
-    getRunningTime() {
+    /* get start time interval and current running time interval */
+    getTrackingTime() {
         const currentDate = new Date();
 
-        // Extract hours, minutes, seconds, and milliseconds
+        /*Extract hours, minutes, seconds, and milliseconds*/
         const hours = this.formatTime(currentDate.getHours());
         const minutes = this.formatTime(currentDate.getMinutes());
         const seconds = this.formatTime(currentDate.getSeconds());
@@ -208,70 +188,69 @@ export class TimerComponent implements OnInit {
 
         const formattedDateTime = `${hours}:${minutes}:${seconds}.${milliseconds}`;
 
-        let timer_start_time : any = this.getLocData?.start_time ? this.getLocData?.start_time : ''; // Replace with your start time
+        let timer_timer_start_time: number = this.getLocData?.timer_start_time ? this.getLocData?.timer_start_time : ''; // Replace with your start time
+        let timer_end_time: string = formattedDateTime; // Replace with your end time
 
-        let timer_end_time : any = formattedDateTime;   // Replace with your end time
-
-        // Convert time values to Date objects
-        let start_loc_time: any = new Date(`1970-01-01T${timer_start_time}Z`);
-
-        let end_loc_time: any = new Date(`1970-01-01T${timer_end_time}Z`);
-
-
-        // Calculate the time difference in milliseconds    
-        let timeDifference = Math.abs(start_loc_time - end_loc_time);
-
-        // Convert the time difference to hours and minutes
-        let hours_diff : any = Math.floor(timeDifference / 3600000); // 1 hour = 3600000 milliseconds
-
-        let min_diff : any = Math.floor((timeDifference % 3600000) / 60000); // 1 minute = 60000 milliseconds
-
-        let sec_diff : any = Math.floor(((timeDifference % 3600000) / 1000)); // 1 second = 1000 milliseconds
-
-
-        if (this.timerRunning == true) {
-            this.hours = hours_diff;
-            this.minutes = min_diff;
-            this.seconds = sec_diff;
-            this.interval_subscription = interval(1000).subscribe(() => this.updateTimer());
-        }
+        return this.timeDifferenceInterval(timer_timer_start_time, timer_end_time);
     }
 
-    /*fetch data from local storage*/
+    /*timer counted function*/
+    private Timer(): void {
+        this.time.seconds++;
+        if (this.time.seconds >= 60) {
+            this.time.seconds = 0;
+            this.time.minutes++;
+            if (this.time.minutes >= 60) {
+                this.time.minutes = 0;
+                this.time.hours++;
+            }
+        }
+        this.timer = `${this.formatTime(this.time.hours)}:${this.formatTime(this.time.minutes)}:${this.formatTime(this.time.seconds)}`;
+    }
+
+    /* format time string value */
+    private formatTime(timeValue: number): string {
+        return timeValue.toString().padStart(2, '0');
+    }
+
+    /* fetch data from local storage */
     async fetchTimeStamp() {
-        this.getLocData = await chrome.storage.local.get();
+        this.getLocData = await this.chrome_service.getStorageData();
 
         /* stored time boolean */
         this.timerRunning = this.getLocData?.running_time
 
         /* selected project value */
-
-        if (this.project == '') {
+        if (this.selectedValues.project == '') {
             let stored_project_value = this.getLocData?.select_project_value;
-            this.project = stored_project_value;
+            this.selectedValues.project = stored_project_value;
         }
-
 
         /* selected task value */
-        if (this.task == '') {
+        if (this.selectedValues.task == '') {
             let stored_task_value = this.getLocData?.select_task_value;
-            this.task = stored_task_value;
+            this.selectedValues.task = stored_task_value;
         }
-
-
 
         /* selected work type value */
-        if (this.typeOfWork == '') {
+        if (this.selectedValues.typeOfWork == '') {
             let stored_workType_value = this.getLocData?.select_workType_value;
-            this.typeOfWork = stored_workType_value;
+            this.selectedValues.typeOfWork = stored_workType_value;
         }
 
-
-        if (this.getLocData?.start_time) {
-            this.getRunningTime()
+        /* set current timer running time hours, minutes and seconds and call time interval again according to current running time */
+        if (this.getLocData?.timer_start_time) {
+            this.getTrackingTime()
+            if (this.timerRunning == true) {
+                this.time.hours = this.timeDifference.hour;
+                this.time.minutes = this.timeDifference.minute;
+                this.time.seconds = this.timeDifference.second;
+                this.interval_subscription = interval(1000).subscribe(() => this.Timer());
+            }
         }
 
-        if (this.project) {
+        /* get tasks by the selected project id */
+        if (this.selectedValues.project) {
             this.getTasks();
         }
     }
