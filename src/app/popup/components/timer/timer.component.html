@@ -56,7 +56,7 @@
                 <option
                     *ngFor="let list of list.tasks"
                     value={{list?.id}}
-                    style="word-break: break-all;"
+                    class="word-break-all"
                 >{{list.name}}</option>
             </select>
             <select
@@ -125,7 +125,7 @@
             <tbody *ngIf="timeEntries.length != 0">
                 <tr
                     *ngFor="let timeEntry of timeEntries"
-                    style="color: #5576AA !important; font-weight: bold;"
+                    class="timeentry-row"
                 >
                     <td>
                         <span *ngIf="timeEntry?.project ">

@@ -1,8 +1,9 @@
-.timerContainer{
+.timerContainer {
     display: flex;
-    gap: 10px;  
+    gap: 10px;
 }
-.timerContainer .timerButton{
+
+.timerContainer .timerButton {
     padding: 8px;
     background-color: #f5f0f9;
     border: 1px solid #A157F6;
@@ -11,17 +12,17 @@
     text-align: center;
 }
 
-.heading_section{
+.heading_section {
     display: flex;
     justify-content: space-between;
 }
 
-.heading_section h2{
+.heading_section h2 {
     padding: 10px;
     font-weight: bold;
 }
 
-.currentTime{
+.currentTime {
     padding: 5px !important;
     margin-bottom: 8px;
     border-radius: 10px;
@@ -41,7 +42,7 @@
     margin-right: -38px !important;
 }
 
-.timer_btn{
+.timer_btn {
     margin-top: 15px;
     width: 412px;
     height: 48px;
@@ -54,25 +55,34 @@
     margin-bottom: 10px;
 }
 
-.tabel_content h3{
-    font-size: 14px!important;
-    font-weight: 700!important;
+.tabel_content h3 {
+    font-size: 14px !important;
+    font-weight: 700 !important;
     color: #5576aa;
     margin-left: 8px;
     margin-bottom: 4px;
 }
 
-.progress_bar{
-    color: #a157f6!important;
-    border: 1px solid #A157F6!important;    
+.progress_bar {
+    color: #a157f6 !important;
+    border: 1px solid #A157F6 !important;
     border-radius: 10px !important;
     padding: 0px !important;
 }
 
-.select_drop{
+.select_drop {
     padding: 10px;
     border: 1px solid #A157F6;
     border-radius: 10px;
     font-size: 14px;
     max-width: 100px;
+}
+
+.word-break-all {
+    word-break: break-all;
+}
+
+.timeentry-row {
+    color: #5576AA !important;
+    font-weight: bold;
 }
