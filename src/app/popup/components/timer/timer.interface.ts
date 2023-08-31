@@ -1,7 +1,7 @@
 export interface IList {
     projects: IProject[],
-    tasks: any[],
-    workTypes: any[],
+    tasks: ITask[],
+    workTypes: IWorkType[],
 }
 
 export interface ISelectedValues {
@@ -29,6 +29,16 @@ export interface IProject {
     isBillableByDefault: boolean
 }
 
+export interface ITask {
+    id: string,
+    name: string
+}
+
+export interface IWorkType {
+    id: string,
+    name: string
+}
+
 export interface ITimeEntry {
     project: IProject,
     createdOn: string,
@@ -52,5 +62,5 @@ export interface ILocalData {
     select_workType_value?: string,
     running_time?: boolean,
     timer_start_time?: number,
-    
+
 }

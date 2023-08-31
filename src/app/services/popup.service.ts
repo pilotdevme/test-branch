@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { environment } from "src/environments/environment";
-import { IStartTimeBody } from "../popup/components/timer/timer.interface";
+import { IProject, IStartTimeBody, ITask, ITimeEntry, IWorkType } from "../popup/components/timer/timer.interface";
 
 @Injectable({
     providedIn: 'root'
@@ -20,7 +20,7 @@ export class PopupService {
 
     /* get projects lists and time entries */
     public getTimeEntries() {
-        return this.http.get(`${environment.awork.url}/timeentries?pageSize=5`, { headers: this.header })
+        return this.http.get<ITimeEntry[]>(`${environment.awork.url}/timeentries?pageSize=5`, { headers: this.header })
     }
 
     /* create time entry */
@@ -30,7 +30,7 @@ export class PopupService {
 
     /* start timer */
     public startTimeEntry(body: IStartTimeBody) {
-        return this.http.post(`${environment.awork.url}/me/timetracking/start`, body, { headers: this.header })
+        return this.http.post<ITimeEntry>(`${environment.awork.url}/me/timetracking/start`, body, { headers: this.header })
     }
 
     /* end timer */
@@ -55,16 +55,16 @@ export class PopupService {
 
     /* get projects lists */
     public getProjects() {
-        return this.http.get(`${environment.awork.url}/projects`, { headers: this.header })
+        return this.http.get<IProject[]>(`${environment.awork.url}/projects`, { headers: this.header })
     }
 
     /* get taks lists */
     public getTasks(project_id: string) {
-        return this.http.get(`${environment.awork.url}/projects/${project_id}/projecttasks`, { headers: this.header })
+        return this.http.get<ITask[]>(`${environment.awork.url}/projects/${project_id}/projecttasks`, { headers: this.header })
     }
 
     /* get work types */
     public getTypeOfWork() {
-        return this.http.get(`${environment.awork.url}/typeofwork`, { headers: this.header })
+        return this.http.get<IWorkType[]>(`${environment.awork.url}/typeofwork`, { headers: this.header })
     }
 }

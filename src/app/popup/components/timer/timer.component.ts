@@ -6,7 +6,7 @@ import { PopupService } from '../../../services/popup.service';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import moment from "moment";
 import { interval, Subscription } from 'rxjs';
-import { ISelectedValues, IList, ITime, ITimeDifference, ITimeEntry, ILocalData, IProject } from './timer.interface';
+import { ISelectedValues, IList, ITime, ITimeDifference, ITimeEntry, ILocalData, IProject, IWorkType, ITask } from './timer.interface';
 import { enumChangeList, enumList, enumTime, enumTimeDifference, initialTimerValue } from './timer.enum';
 import { ChromeStorageService } from 'src/app/services/chromeService.service';
 
@@ -41,7 +41,7 @@ export class TimerComponent implements OnInit {
     /* get project details and timer */
     getTimers() {
         try {
-            this.popupService.getTimeEntries().subscribe((response: any) => {
+            this.popupService.getTimeEntries().subscribe((response: ITimeEntry[]) => {
                 this.timeEntries = response;
             });
         }
@@ -59,7 +59,7 @@ export class TimerComponent implements OnInit {
             "typeOfWorkId": this.selectedValues.typeOfWork,
             "timezone": Intl.DateTimeFormat().resolvedOptions().timeZone
         };
-        this.popupService.startTimeEntry(body).subscribe((response: any) => {
+        this.popupService.startTimeEntry(body).subscribe((response: ITimeEntry) => {
             this.timerRunning = true
             this.chrome_service.setStorageData({ running_time: this.timerRunning });
             this.chrome_service.setStorageData({ timer_start_time: response?.startTimeLocal });
@@ -91,21 +91,21 @@ export class TimerComponent implements OnInit {
 
     /* get work types */
     getWorkTypes() {
-        this.popupService.getTypeOfWork().subscribe((response: any) => {
+        this.popupService.getTypeOfWork().subscribe((response: IWorkType[]) => {
             this.list.workTypes = response
         });
     }
 
     /* get projects list */
     getProjects() {
-        this.popupService.getProjects().subscribe((response: any) => {
+        this.popupService.getProjects().subscribe((response: IProject[]) => {
             this.list.projects = response
         });
     }
 
     /* get task lists according to projects list */
     getTasks() {
-        this.popupService.getTasks(this.selectedValues.project).subscribe((response: any) => {
+        this.popupService.getTasks(this.selectedValues.project).subscribe((response: ITask[]) => {
             this.list.tasks = response
         });
     }
