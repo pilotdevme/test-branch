@@ -158,8 +158,8 @@ export class TimerComponent implements OnInit {
     timeDifferenceInterval(startTimeIntervalValue: string, endTimeIntervalValue: string) {
 
         /*Convert time values to Date objects*/
-        const start_loc_time: any = new Date(`1970-01-01T${startTimeIntervalValue}Z`);
-        const end_loc_time: any = new Date(`1970-01-01T${endTimeIntervalValue}Z`);
+        const start_loc_time: number = new Date(`1970-01-01T${startTimeIntervalValue}Z`).getTime();
+        const end_loc_time: number = new Date(`1970-01-01T${endTimeIntervalValue}Z`).getTime();
 
         const timeDifference = Math.abs(start_loc_time - end_loc_time);
 
