@@ -24,7 +24,8 @@
     ],
     "typeRoots": [
       "node_modules/@types"
-    ]
+    ],
+    "esModuleInterop": true
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
@@ -32,4 +33,5 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true
   }
+
 }

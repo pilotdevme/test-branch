@@ -15,7 +15,7 @@ After cloning the project.
     
 ## Build
 
-To create build run
+To create build, run
 
 ```bash
   gulp

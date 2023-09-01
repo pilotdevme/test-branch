@@ -13,12 +13,13 @@ import { Component, ViewEncapsulation, OnInit } from '@angular/core';
     encapsulation: ViewEncapsulation.None
 })
 export class SampleComponent implements OnInit {
+    public content = "Hello!"
 
     public onBtnClick(): void {
         alert('SampleComponent.onBtnClick() new awork');
     }
-    ngOnInit(): void {
-       // do something
-    }
 
+    ngOnInit(): void {
+        this.content = "Hello World!"
+    }
 }

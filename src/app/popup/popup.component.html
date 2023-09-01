@@ -1,1 +1,14 @@
-<div>popup works</div>
+<div class="popup-container">
+    <!-- login screen -->
+    <div *ngIf="!isLoggedIn else timerscreen">
+        <popup-login
+            [login]="isLoggedIn"
+            (toggleLogin)="toggleLogin($event)"
+            (toggleSignup)="toggleSignup($event)"
+        ></popup-login>
+    </div>
+     <!-- time tracking screen -->
+    <ng-template #timerscreen>
+        <timer-login></timer-login>
+    </ng-template>
+</div>
