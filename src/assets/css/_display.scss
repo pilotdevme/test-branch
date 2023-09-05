@@ -1,0 +1,40 @@
+@import './_mixins.scss';
+
+.aw-2-d--block,
+.📦 {
+  display: block !important;
+}
+
+.aw-2-d--inline {
+  display: inline !important;
+}
+
+.aw-2-d--inline-block {
+  display: inline-block !important;
+}
+
+.aw-2-d--hidden,
+.👻 {
+  display: none !important;
+}
+
+.📱👻 {
+  @include media-breakpoint-down(s) {
+    display: none !important;
+  }
+}
+
+/* Responsive helpers*/
+@each $bp in map-keys($breakpoints) {
+  .aw-2-d--hidden-#{$bp}-up {
+    @include media-breakpoint-up($bp) {
+      display: none !important;
+    }
+  }
+
+  .aw-2-d--hidden-#{$bp}-down {
+    @include media-breakpoint-down($bp) {
+      display: none !important;
+    }
+  }
+}

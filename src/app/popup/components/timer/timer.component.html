@@ -1,79 +1,32 @@
 <div>
     <!-- Timer details -->
-    <div>
-        <div class="heading_section">
-            <h2>awork</h2>
+    <div class="aw-2-pos--relative aw-2-w-100 aw-2-py--xxl aw-2-px--l">
+        <div class="aw-2-flx aw-2-flx--center aw-2-flx--content-between aw-2-mb--xl">
+            <a href="#" class="aw-2-d--block"><img src="/assets/images/logo.svg" alt="hand-surf image" /></a>
             <div class="">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    style="fill: rgb(126, 11, 233); margin-top: 5px !important;"
-                >
-                    <path
-                        d="m2.344 15.271 2 3.46a1 1 0 0 0 1.366.365l1.396-.806c.58.457 1.221.832 1.895 1.112V21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1.598a8.094 8.094 0 0 0 1.895-1.112l1.396.806c.477.275 1.091.11 1.366-.365l2-3.46a1.004 1.004 0 0 0-.365-1.366l-1.372-.793a7.683 7.683 0 0 0-.002-2.224l1.372-.793c.476-.275.641-.89.365-1.366l-2-3.46a1 1 0 0 0-1.366-.365l-1.396.806A8.034 8.034 0 0 0 15 4.598V3a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v1.598A8.094 8.094 0 0 0 7.105 5.71L5.71 4.904a.999.999 0 0 0-1.366.365l-2 3.46a1.004 1.004 0 0 0 .365 1.366l1.372.793a7.683 7.683 0 0 0 0 2.224l-1.372.793c-.476.275-.641.89-.365 1.366zM12 8c2.206 0 4 1.794 4 4s-1.794 4-4 4-4-1.794-4-4 1.794-4 4-4z"
-                    ></path>
-                </svg>
+                <a href="#"><img src="/assets/images/settings.svg" /></a>
+                <a href="#" class=" aw-2-ml--l"><img src="/assets/images/full_screen.svg" /></a>
             </div>
         </div>
 
         <!-- current time input feild -->
-        <div class="currentTime">
-            <aw2-text-field
-                label="Current time"
-                placeholder="Fixing client reported bugs"
-                (change)="noteChange($event)"
-            ></aw2-text-field>
+        <div class="currentTime m-0">
+            <aw2-text-field label="Current time" placeholder="Add note..."
+                (change)="noteChange($event)"></aw2-text-field>
         </div>
 
         <!-- dropdown buttons for project, task and work -->
-        <div class="timerContainer">
-            <select
-                (change)="projectChange($event)"
-                [(ngModel)]="selectedValues.project"
-                class="select_drop"
-                placeholder="Project"
-            >
-                <option
-                    value=""
-                    selected
-                >Project</option>
-                <option
-                    *ngFor="let list of list.projects"
-                    value={{list?.id}}
-                >{{list.name}}</option>
-            </select>
-            <select
-                (change)="taskChange($event)"
-                class="select_drop"
-                [(ngModel)]="selectedValues.task"
-            >
-                <option
-                    value=""
-                    selected
-                >Task</option>
-                <option
-                    *ngFor="let list of list.tasks"
-                    value={{list?.id}}
-                    class="word-break-all"
-                >{{list.name}}</option>
-            </select>
-            <select
-                (change)="typeOfWorkChange($event)"
-                class="select_drop"
-                [(ngModel)]="selectedValues.typeOfWork"
-            >
-                <option
-                    value=""
-                    selected
-                >Work</option>
-                <option
-                    *ngFor="let list of list.workTypes"
-                    value={{list?.id}}
-                >{{list.name}}</option>
-            </select>
-            <div class="timerButton">Billable</div>
+
+        <div class="aw-2-flx">
+            <aw2-dropdown-field id="projectsDropdown" class="aw-2-drop--custom" label="Projects"></aw2-dropdown-field>
+            <aw2-dropdown-field id="tasksDropdown" class="aw-2-drop--custom aw-2-ml--s"
+                label="Tasks"></aw2-dropdown-field>
+            <aw2-dropdown-field id="workTypeDropdown" class="aw-2-drop--custom aw-2-ml--s"
+                label="Dropdown"></aw2-dropdown-field>
+            <button
+                class="aw-2-project_btns aw-2-flx aw-2-flx--center aw-2-b-0 aw-2-b--radius-m aw-2-p--s aw-2-ml--s aw-2-txt--bold aw-2-txt--m aw-2-bill-color">
+                $ <span class="aw-2-ml--s">Billable</span>
+            </button>
         </div>
 
         <!-- start or stop time interval -->
@@ -81,73 +34,73 @@
         <div class="mt-3">
             <!-- stop interval -->
             <div *ngIf="timerRunning else timerButton">
-                <button (click)="stopTimer();">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        style="fill: rgb(161, 87, 246)
-                    ; margin-top: 3px !important;"
-                    >
-                        <path
-                            d="M5.536 21.886a1.004 1.004 0 0 0 1.033-.064l13-9a1 1 0 0 0 0-1.644l-13-9A1 1 0 0 0 5 3v18a1 1 0 0 0 .536.886z"
-                        ></path>
-                    </svg>{{ timer }}</button>
+                <button (click)="stopTimer();"
+                    class="aw-2-d--block aw-2-w--full aw-2-p--l aw-2-b--radius-l aw-2-b-0 aw-2-btn">
+                    <div class="aw-2-flx aw-2-flx--center aw-2-txt--center aw-2-w--full aw-2-flx--content-center ">
+                        <img src="/assets/images/pause.svg" /><span class="aw-2-txt--bold aw-2-txt--m">{{ timer
+                            }}</span>
+                    </div>
+                </button>
             </div>
 
             <!-- start interval -->
             <ng-template #timerButton>
                 <button
-                    class="timer_btn"
-                    (click)="startTimer()"
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        style="fill: rgb(161, 87, 246)
-                    ; margin-top: 3px !important;"
-                    >
-                        <path
-                            d="M5.536 21.886a1.004 1.004 0 0 0 1.033-.064l13-9a1 1 0 0 0 0-1.644l-13-9A1 1 0 0 0 5 3v18a1 1 0 0 0 .536.886z"
-                        ></path>
-                    </svg>Start Timer</button>
+                    class="aw-2-d--block aw-2-w--full aw-2-p--l aw-2-b--radius-l aw-2-b-0 aw-2-btn aw-2-start-stop--btn"
+                    (click)="startTimer()">
+                    <div class="aw-2-flx aw-2-flx--center aw-2-txt--center aw-2-w--full aw-2-flx--content-center ">
+                        <img src="/assets/images/play_arrow.svg" /><span class="aw-2-txt--bold aw-2-txt--m ">Start
+                            Timer</span>
+                    </div>
+                </button>
             </ng-template>
         </div>
     </div>
 
     <!-- tabel for project entries -->
-    <div class="tabel_content">
-        <h3>Recently tracked</h3>
-        <table class="table table-striped">
-            <tbody *ngIf="timeEntries.length != 0">
-                <tr
-                    *ngFor="let timeEntry of timeEntries"
-                    class="timeentry-row"
-                >
-                    <td>
-                        <span *ngIf="timeEntry?.project ">
-                            {{timeEntry?.project?.name}}
-                        </span>
+    <div class="aw-2--table aw-2-px--l aw-2-mb--l">
+        <h3 class="aw-2-txt--bold aw-2-txt--m aw-2--head-color aw-2-mb--l">Recently tracked</h3>
+        <table class="aw-2-tbl aw-2-p--l">
+            <tbody *ngIf="timeEntries.length != 0" class="aw-2-tbl-content-list">
+                <tr *ngFor="let timeEntry of timeEntries" class="timeentry-row">
+                    <td class="aw-2-w--full aw-2-py--m">
+                        <div class="aw-2-flx aw-2-flx--center aw-2-txt--truncate">
+                            <img src="/assets/images/briefcase.svg" />
+                            <div class="aw-2-ml--m w-2-txt--truncate aw-2-w--full aw-2-project--content">
+                                <div class="aw-2-flx aw-2-flx--center">
+                                    <div class="aw-2-flx aw-2-flx--centeraw-2-mr--s aw-2-flx-size aw-2-txt--truncate"
+                                        *ngIf="timeEntry?.project ">
+                                        <img src="/assets/images/play_arrow.svg" />
+                                        <span class="aw-2-txt--bold aw-2-txt--m aw-2-txt--truncate">
+                                            <!-- {{timeEntry?.project?.name}} -->
+                                            test test test test
+                                        </span>
+                                    </div>
+                                    <div class="aw-2-flx aw-2-flx--center aw-2-flx-size aw-2-txt--truncate">
+                                        <img src="/assets/images/play_arrow.svg" /><span
+                                            class="aw-2-txt--bold aw-2-txt--m aw-2-txt--truncate">
+                                            <!-- {{timeEntry?.project?.name}} -->
+                                            test test test test
+                                        </span>
+                                    </div>
+                                </div>
+                                <h3 class="aw-2-txt--bold aw-2-txt--m">Project Content</h3>
+                            </div>
+                        </div>
                         <ng-template #noProject>
                             <span>N/A</span>
                         </ng-template>
                     </td>
-                    <td>
+                    <td class="aw-2--date--time-width aw-2-py--m aw-2-txt--bold">
                         {{getDate(timeEntry.createdOn)}}
                         <br />
                         {{getTime(timeEntry.startTimeLocal)}}- {{getTime(timeEntry.endTimeLocal)}}
                     </td>
-                    <td>
+                    <td class="aw-2--progress-bar-width aw-2-py--m aw-2-txt--bold">
                         <div *ngIf="timeEntry?.endTimeLocal else timerNotEnded">
                             {{totalTrackingTime(timeEntry)}}
-                            <mat-progress-bar
-                                mode="determinate"
-                                class="progress_bar"
-                                value={{timeEntry?.duration}}
-                            ></mat-progress-bar>
+                            <mat-progress-bar mode="determinate" class="progress_bar"
+                                value={{timeEntry?.duration}}></mat-progress-bar>
                         </div>
                         <ng-template #timerNotEnded>
                             Timer is being tracked

@@ -99,7 +99,12 @@ export class TimerComponent implements OnInit {
     /* get projects list */
     getProjects() {
         this.popupService.getProjects().subscribe((response: IProject[]) => {
-            this.list.projects = response
+            this.list.projects = response;
+            const dropdownOptions = this.list.projects.map(project => ({ value: project.id, label: project.name, icon: "bell" }))
+            const dropdown: any = document.querySelector('#projectsDropdown')
+            if (dropdown) {
+                dropdown.options = dropdownOptions
+            }
         });
     }
 
@@ -107,6 +112,11 @@ export class TimerComponent implements OnInit {
     getTasks() {
         this.popupService.getTasks(this.selectedValues.project).subscribe((response: ITask[]) => {
             this.list.tasks = response
+            const dropdownOptions = this.list.tasks.map(task => ({ value: task.id, label: task.name, icon: "bell" }))
+            const dropdown: any = document.querySelector('#tasksDropdown')
+            if (dropdown) {
+                dropdown.options = dropdownOptions
+            }
         });
     }
 

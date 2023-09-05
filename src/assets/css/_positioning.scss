@@ -1,0 +1,82 @@
+/* Positioning */
+.aw-2-pos--center {
+  margin-right: auto !important;
+  margin-left: auto !important;
+}
+
+.aw-2-pos--vcenter {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.aw-2-pos--center-all {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+}
+
+.aw-2-pos--vmiddle {
+  vertical-align: middle !important;
+}
+
+.aw-2-pos--bottom {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+}
+
+.aw-2-pos--relative {
+  position: relative;
+}
+
+.aw-2-pos--absolute {
+  position: absolute;
+}
+
+/* Float */
+.aw-2-pos--float-right {
+  float: right;
+}
+.aw-2-pos--float-left {
+  float: left;
+}
+.aw-2-pos--float-clear {
+  clear: both;
+}
+
+/* Flexbox */
+.aw-2-flx {
+  display: flex;
+}
+
+.aw-2-flx--row {
+  flex-direction: row;
+}
+
+.aw-2-flx--column {
+  flex-direction: column;
+}
+
+.aw-2-flx--center {
+  align-items: center;
+}
+
+.aw-2-flx--column-reverse {
+  flex-direction: column-reverse;
+}
+
+
+
+@each $number in (0, 1, 2) {
+  .aw-2-flx--flex-#{$number} {
+    flex: $number;
+  }
+  .aw-2-flx--shrink-#{$number} {
+    flex-shrink: $number;
+  }
+  .aw-2-flx--grow-#{$number} {
+    flex-grow: $number;
+  }
+}
