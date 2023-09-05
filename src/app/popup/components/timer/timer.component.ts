@@ -101,6 +101,8 @@ export class TimerComponent implements OnInit {
         this.popupService.getProjects().subscribe((response: IProject[]) => {
             this.list.projects = response;
             const dropdownOptions = this.list.projects.map(project => ({ value: project.id, label: project.name, icon: "bell" }))
+
+            // cannot use Element, HTMLElement, HTMLSelectElement because options is undefined or read-only for the types
             const dropdown: any = document.querySelector('#projectsDropdown')
             if (dropdown) {
                 dropdown.options = dropdownOptions
@@ -113,6 +115,8 @@ export class TimerComponent implements OnInit {
         this.popupService.getTasks(this.selectedValues.project).subscribe((response: ITask[]) => {
             this.list.tasks = response
             const dropdownOptions = this.list.tasks.map(task => ({ value: task.id, label: task.name, icon: "bell" }))
+
+            // cannot use Element, HTMLElement, HTMLSelectElement because options is undefined or read-only for these types
             const dropdown: any = document.querySelector('#tasksDropdown')
             if (dropdown) {
                 dropdown.options = dropdownOptions
