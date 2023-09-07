@@ -6,7 +6,7 @@ import { PopupService } from '../../../services/popup.service';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import moment from "moment";
 import { interval, Subscription } from 'rxjs';
-import { ISelectedValues, IList, ITime, ITimeDifference, ITimeEntry, ILocalData, IProject, IWorkType, ITask } from './timer.interface';
+import { ISelectedValues, IList, ITime, ITimeDifference, ITimeEntry, ILocalData, IProject, IWorkType, ITask, IStartTimeBody } from './timer.interface';
 import { enumChangeList, enumList, enumTime, enumTimeDifference, initialTimerValue } from './timer.enum';
 import { ChromeStorageService } from 'src/app/services/chromeService.service';
 
@@ -50,15 +50,16 @@ export class TimerComponent implements OnInit {
 
     /* start time interval function */
     startTimer() {
-        const body = {
+        const [defaultWorkType] = this.list.workTypes
+        const body: IStartTimeBody = {
             "isBillable": this.selectedValues.isBillable,
             "isBilled": false,
-            "taskId": this.selectedValues.task,
-            "projectId": this.selectedValues.project,
             "note": this.note,
-            "typeOfWorkId": this.selectedValues.typeOfWork,
+            "typeOfWorkId": this.selectedValues.typeOfWork.trim() || defaultWorkType.id,
             "timezone": Intl.DateTimeFormat().resolvedOptions().timeZone
         };
+        this.selectedValues.task && (body["taskId"] = this.selectedValues.task);
+        this.selectedValues.project && (body["projectId"] = this.selectedValues.project);
         this.popupService.startTimeEntry(body).subscribe((response: ITimeEntry) => {
             this.timerRunning = true
             this.chrome_service.setStorageData({ running_time: this.timerRunning });
@@ -74,10 +75,10 @@ export class TimerComponent implements OnInit {
         this.popupService.endTimeEntry().subscribe(() => {
             this.timerRunning = false;
             this.chrome_service.setStorageData({ running_time: this.timerRunning });
-            this.chrome_service.setStorageData({ timer_start_time: ' ' });
-            this.chrome_service.setStorageData({ select_workType_value: ' ' });
-            this.chrome_service.setStorageData({ select_project_value: ' ' });
-            this.chrome_service.setStorageData({ select_task_value: ' ' });
+            this.chrome_service.setStorageData({ timer_start_time: '' });
+            this.chrome_service.setStorageData({ select_workType_value: '' });
+            this.chrome_service.setStorageData({ select_project_value: '' });
+            this.chrome_service.setStorageData({ select_task_value: '' });
 
             if (this.timerRunning === false) {
                 this.intervalSubscription.unsubscribe();
@@ -151,7 +152,7 @@ export class TimerComponent implements OnInit {
 
     /* get Date format for project tabel entry */
     getDate(date: string) {
-        const formatted_date = moment(date).format("DD MMMM");
+        const formatted_date = moment(date).format("DD MMM");
         return formatted_date;
     }
 

@@ -20,7 +20,7 @@ export class PopupService {
 
     /* get projects lists and time entries */
     public getTimeEntries() {
-        return this.http.get<ITimeEntry[]>(`${environment.awork.url}/timeentries?pageSize=5`, { headers: this.header })
+        return this.http.get<ITimeEntry[]>(`${environment.awork.url}/timeentries?pageSize=4`, { headers: this.header })
     }
 
     /* create time entry */

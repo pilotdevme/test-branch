@@ -4,85 +4,110 @@ $progress-bar-width: 60px;
 $date-time-width: 100px;
 $dropdown-width: 100px;
 $content-width: calc(100% - 40px);
+
 .aw-2-w--full {
-  width: 100%;
+    width: 100%;
 }
+
 .aw-2-b-0 {
-  border: 0;
+    border: 0;
 }
+
 .aw-2-btn {
-  color: $color-purple-900;
+    color: $color-purple-900;
 }
+
 .aw-2-flx--content-between {
-  justify-content: space-between;
+    justify-content: space-between;
 }
 
 .aw-2-flx--content-center {
-  justify-content: center;
+    justify-content: center;
 }
+
 .aw-2-flx--content-between {
-  justify-content: space-between;
+    justify-content: space-between;
 }
 
 .aw-2-flx--content-center {
-  justify-content: center;
+    justify-content: center;
 }
+
 .aw-2-w-main {
-  min-width: 450px;
-  max-width: 600px;
-  min-height: 430px;
+    min-width: 450px;
+    max-width: 600px;
+    min-height: 430px;
 }
+
 .aw-2-btns button.btn--auto {
-  width: 200px;
+    width: 200px;
 }
+
 .aw-2-project_btns {
-  background-color: $color-blue-100;
+    background-color: $color-blue-100;
 }
+
 .aw-2-bill-color {
-  color: $color-blue;
+    color: $color-blue;
 }
+
 .aw-2--head-color {
-  color: var(--color-steel);
+    color: var(--color-steel);
 }
+
 .aw-2--progress-bar-width {
-  width: $progress-bar-width;
-  .progress_bar {
-    border: 0 !important;
-    background: rgba($color-blue-900, 0.3) !important;
-    border-radius: 10px !important;
-    padding: 0px !important;
-    .mdc-linear-progress__bar-inner {
-      border-color: $color-blue-900;
+    width: $progress-bar-width;
+
+    .progress_bar {
+        border: 0 !important;
+        background: rgba($color-blue-900, 0.3) !important;
+        border-radius: 10px !important;
+        padding: 0px !important;
+
+        .mdc-linear-progress__bar-inner {
+            border-color: $color-blue-900;
+        }
     }
-  }
 }
+
 .aw-2--date--time-width {
-  width: $date-time-width;
+    width: $date-time-width;
 }
+
 .aw-2-tbl-content-list tr {
-  &:hover {
+    &:hover {
+        td {
+            background-color: $color-blue-o-50;
+        }
+    }
+
     td {
-      background-color: $color-blue-o-50;
+        &:first-child {
+            @extend #{".aw-2-btl--radius-m", ".aw-2-bbl--radius-m"};
+        }
+
+        &:last-child {
+            @extend #{".aw-2-btr--radius-m", ".aw-2-bbr--radius-m"};
+        }
     }
-  }
-  td {
-    &:first-child {
-      @extend #{".aw-2-btl--radius-m", ".aw-2-bbl--radius-m"};
-    }
-    &:last-child {
-      @extend #{".aw-2-btr--radius-m", ".aw-2-bbr--radius-m"};
-    }
-  }
 }
+
 .aw-2-drop--custom {
-  width: $dropdown-width;
-  .dropdown-field-label {
-    display: none;
-  }
+    width: $dropdown-width;
+
+    .dropdown-field-label {
+        display: none;
+    }
 }
+
 .aw-2-start-stop--btn {
-  background-color: $color-purple-o-50;
+    background-color: $color-purple-o-50;
 }
+
 .aw-2-project--content {
-  width: $content-width;
+    width: $content-width;
+}
+
+.aw-2-project--note {
+    color: #{$gray-light-400}
 }

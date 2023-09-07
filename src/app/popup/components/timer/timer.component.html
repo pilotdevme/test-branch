@@ -4,8 +4,8 @@
         <div class="aw-2-flx aw-2-flx--center aw-2-flx--content-between aw-2-mb--xl">
             <a href="#" class="aw-2-d--block"><img src="/assets/images/logo.svg" alt="hand-surf image" /></a>
             <div class="">
-                <a href="#"><img src="/assets/images/settings.svg" /></a>
-                <a href="#" class=" aw-2-ml--l"><img src="/assets/images/full_screen.svg" /></a>
+                <i class="aw-2-icn">settings</i>
+                <a href="#" class=" aw-2-ml--l"><i class="aw-2-icn">open_in_new</i></a>
             </div>
         </div>
 
@@ -37,8 +37,10 @@
                 <button (click)="stopTimer();"
                     class="aw-2-d--block aw-2-w--full aw-2-p--l aw-2-b--radius-l aw-2-b-0 aw-2-btn">
                     <div class="aw-2-flx aw-2-flx--center aw-2-txt--center aw-2-w--full aw-2-flx--content-center ">
-                        <img src="/assets/images/pause.svg" /><span class="aw-2-txt--bold aw-2-txt--m">{{ timer
-                            }}</span>
+                        <img src="/assets/images/stop.svg" />
+                        <span class="aw-2-txt--bold aw-2-txt--m">
+                            {{ timer }}
+                        </span>
                     </div>
                 </button>
             </div>
@@ -49,8 +51,10 @@
                     class="aw-2-d--block aw-2-w--full aw-2-p--l aw-2-b--radius-l aw-2-b-0 aw-2-btn aw-2-start-stop--btn"
                     (click)="startTimer()">
                     <div class="aw-2-flx aw-2-flx--center aw-2-txt--center aw-2-w--full aw-2-flx--content-center ">
-                        <img src="/assets/images/play_arrow.svg" /><span class="aw-2-txt--bold aw-2-txt--m ">Start
-                            Timer</span>
+                        <i class="aw-2-icn">play_arrow</i>
+                        <span class="aw-2-txt--bold aw-2-txt--m ">
+                            Start Timer
+                        </span>
                     </div>
                 </button>
             </ng-template>
@@ -69,22 +73,22 @@
                             <div class="aw-2-ml--m w-2-txt--truncate aw-2-w--full aw-2-project--content">
                                 <div class="aw-2-flx aw-2-flx--center">
                                     <div class="aw-2-flx aw-2-flx--centeraw-2-mr--s aw-2-flx-size aw-2-txt--truncate"
-                                        *ngIf="timeEntry?.project ">
-                                        <img src="/assets/images/play_arrow.svg" />
+                                        *ngIf="timeEntry?.project">
+                                        <img src="/assets/images/bell.svg" />
                                         <span class="aw-2-txt--bold aw-2-txt--m aw-2-txt--truncate">
-                                            <!-- {{timeEntry?.project?.name}} -->
-                                            test test test test
+                                            {{timeEntry?.project?.name}}
                                         </span>
                                     </div>
-                                    <div class="aw-2-flx aw-2-flx--center aw-2-flx-size aw-2-txt--truncate">
-                                        <img src="/assets/images/play_arrow.svg" /><span
-                                            class="aw-2-txt--bold aw-2-txt--m aw-2-txt--truncate">
-                                            <!-- {{timeEntry?.project?.name}} -->
-                                            test test test test
+                                    <div class="aw-2-flx aw-2-flx--center aw-2-flx-size aw-2-txt--truncate"
+                                        *ngIf="timeEntry?.task">
+                                        <i class="aw-2-icn">arrow_right</i>
+                                        <span class="aw-2-txt--bold aw-2-txt--m aw-2-txt--truncate">
+                                            {{timeEntry?.task?.name}}
                                         </span>
                                     </div>
                                 </div>
-                                <h3 class="aw-2-txt--bold aw-2-txt--m">Project Content</h3>
+                                <h3 *ngIf="timeEntry?.note" class="aw-2-txt--bold aw-2-txt--m aw-2-project--note">
+                                    ({{timeEntry?.note}})</h3>
                             </div>
                         </div>
                         <ng-template #noProject>
