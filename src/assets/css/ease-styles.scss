@@ -1,0 +1,15 @@
+/*
+ * This file bundles all classes of ease together into an importable file.
+ * It should never be imported more than once! ☝️
+ */
+
+@import './_reset.scss';
+@import './_borders.scss';
+@import './_colors.scss';
+@import './_display.scss';
+@import './_icons.scss';
+@import './_positioning.scss';
+@import './_shadows.scss';
+@import './_spacings.scss';
+@import './_typography.scss';
+@import './_tables.scss';

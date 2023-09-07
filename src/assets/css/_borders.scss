@@ -1,0 +1,78 @@
+@import './_variables.scss';
+
+.aw-2-b {
+  border: 1px solid var(--color-border);
+}
+
+.aw-2-bt {
+  border-top: 1px solid var(--color-border);
+}
+
+.aw-2-bb {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.aw-2-br {
+  border-right: 1px solid var(--color-border);
+}
+
+.aw-2-bl {
+  border-left: 1px solid var(--color-border);
+}
+
+@each $size, $length in $border-sizes {
+  // all borders
+  .aw-2-b--radius-#{$size} {
+    border-radius: $length;
+    overflow: hidden;
+  }
+
+  // specific sides sides only
+  .aw-2-bt--radius-#{$size} {
+    border-top-left-radius: $length;
+    border-top-right-radius: $length;
+  }
+
+  .aw-2-bl--radius-#{$size} {
+    border-top-left-radius: $length;
+    border-bottom-left-radius: $length;
+  }
+
+  .aw-2-br--radius-#{$size} {
+    border-top-right-radius: $length;
+    border-bottom-left-radius: $length;
+  }
+
+  .aw-2-bb--radius-#{$size} {
+    border-bottom-left-radius: $length;
+    border-bottom-right-radius: $length;
+  }
+
+  // corners
+  .aw-2-btl--radius-#{$size} {
+    border-top-left-radius: $length;
+  }
+
+  .aw-2-btr--radius-#{$size} {
+    border-top-right-radius: $length;
+  }
+
+  .aw-2-bbl--radius-#{$size} {
+    border-bottom-left-radius: $length;
+  }
+
+  .aw-2-bbr--radius-#{$size} {
+    border-bottom-right-radius: $length;
+  }
+}
+
+//special cases
+.aw-2-b--radius-circle {
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.aw-2-b--ghost {
+  border-width: 2px;
+  border-style: dashed;
+}

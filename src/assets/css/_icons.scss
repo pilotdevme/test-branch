@@ -1,0 +1,40 @@
+@import './_mixins.scss';
+@import './_variables.scss';
+
+.aw-2-icn {
+  font-family: 'aw-2-icon-font' !important; // !important to prevent browser extensions changing font
+  color: var(--color-icon);
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  line-height: 1em;
+  font-size: 20px; // default size 'm'
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  vertical-align: text-bottom;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'liga';
+}
+
+@each $size, $value in $icon-sizes {
+  .aw-2-icn--#{$size} {
+    font-size: $value;
+  }
+}
+
+@each $name, $color in $text-colors {
+  .aw-2-icn--#{$name} {
+    color: $color;
+  }
+}
+
+@each $name, $color in $gray-colors {
+  .aw-2-icn--#{$name} {
+    color: $color;
+  }
+}

@@ -1,0 +1,21 @@
+@import './_mixins.scss';
+
+.aw-2-sh--xs {
+  @include shadow(xs);
+}
+
+.aw-2-sh--s {
+  @include shadow(s);
+}
+
+.aw-2-sh--m {
+  @include shadow(m);
+}
+
+.aw-2-sh--l {
+  @include shadow(l);
+}
+
+.aw-2-sh--xl {
+  @include shadow(xl);
+}

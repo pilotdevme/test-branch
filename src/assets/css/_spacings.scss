@@ -1,0 +1,51 @@
+@import './_mixins.scss';
+@import './_variables.scss';
+
+@each $prop, $abbrev in (margin: m, padding: p) {
+  @each $step, $value in $spacings {
+    .aw-2-#{$abbrev}--#{$step} {
+      #{$prop}: $value $value !important;
+    }
+
+    .aw-2-#{$abbrev}t--#{$step} {
+      #{$prop}-top: $value !important;
+    }
+
+    .aw-2-#{$abbrev}r--#{$step} {
+      #{$prop}-right: $value !important;
+    }
+
+    .aw-2-#{$abbrev}b--#{$step} {
+      #{$prop}-bottom: $value !important;
+    }
+
+    .aw-2-#{$abbrev}l--#{$step} {
+      #{$prop}-left: $value !important;
+    }
+
+    .aw-2-#{$abbrev}x--#{$step} {
+      #{$prop}-right: $value !important;
+      #{$prop}-left: $value !important;
+    }
+
+    .aw-2-#{$abbrev}y--#{$step} {
+      #{$prop}-top: $value !important;
+      #{$prop}-bottom: $value !important;
+    }
+  }
+}
+
+// Some special margin utils
+.aw-2-m--auto {
+  margin: auto !important;
+}
+
+.aw-2-mx--auto {
+  margin-right: auto !important;
+  margin-left: auto !important;
+}
+
+.aw-2-my-auto {
+  margin-top: auto !important;
+  margin-bottom: auto !important;
+}

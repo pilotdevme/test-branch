@@ -1,0 +1,151 @@
+@import './_variables.scss';
+
+.aw-2-tbl {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: unset;
+  overflow: visible;
+  table-layout: fixed;
+  border-collapse: collapse;
+  box-sizing: border-box;
+
+  tr {
+    transition: 200ms ease-in;
+
+    td,
+    .aw-tbl__cell {
+      padding: 4px 8px;
+      vertical-align: middle;
+    }
+  }
+
+  // row size
+  &--s tr td {
+    height: 32px;
+  }
+  &--m tr td {
+    height: 40px;
+  }
+  &--l tr td {
+    height: 56px;
+  }
+
+  $hover-border-radius: 12px;
+
+  // row hover state
+  &--hover {
+    tr {
+      transition: 100ms ease-in;
+    }
+    tr:hover {
+      cursor: pointer;
+
+      td {
+        background: $color-blue-o-50;
+        color: $color-blue-900;
+      }
+
+      td:first-of-type {
+        border-top-left-radius: $hover-border-radius;
+        border-bottom-left-radius: $hover-border-radius;
+      }
+      td:last-of-type {
+        border-top-right-radius: $hover-border-radius;
+        border-bottom-right-radius: $hover-border-radius;
+      }
+    }
+
+    tr:active {
+      td {
+        background: $color-blue-o-100;
+      }
+    }
+  }
+
+  // row selected state
+  &__row--selected {
+    td {
+      background: $color-blue-o-50;
+      color: $color-blue-900;
+    }
+
+    td:first-of-type {
+      border-top-left-radius: $hover-border-radius;
+      border-bottom-left-radius: $hover-border-radius;
+    }
+    td:last-of-type {
+      border-top-right-radius: $hover-border-radius;
+      border-bottom-right-radius: $hover-border-radius;
+    }
+  }
+}
+
+.aw-2-tbl-large-list {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+
+  tr {
+    position: relative;
+    transition: 200ms ease-in;
+    border-bottom: 1px solid $color-fog;
+
+    &:last-of-type {
+      border-bottom: none;
+    }
+  }
+
+  &__cell {
+    text-align: center;
+  }
+
+  &__cell:first-of-type {
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+  }
+
+  &__cell:last-of-type {
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+  }
+
+  &--hover {
+    tr {
+      transition: none;
+    }
+
+    tr::after {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: -6px;
+      width: calc(100% + 12px);
+      height: 42px;
+      z-index: -1;
+      border-radius: 12px;
+    }
+
+    tr:hover {
+      cursor: pointer;
+      border-color: transparent;
+
+      .aw-2-tbl-large__cell {
+        color: $color-blue-900;
+      }
+
+      &::after {
+        background: $color-blue-o-50;
+      }
+    }
+
+    tr:has(+ tr:hover) {
+      border-color: transparent;
+    }
+
+    tr:active {
+      &::after {
+        background: $color-blue-o-100;
+      }
+    }
+  }
+}
