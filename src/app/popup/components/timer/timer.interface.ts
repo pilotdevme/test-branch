@@ -43,6 +43,10 @@ export interface IWorkType {
     name: string
 }
 
+export interface IGetToken {
+    access_token: string,
+}
+
 export interface ITimeEntry {
     project: IProject,
     task: ITask,
