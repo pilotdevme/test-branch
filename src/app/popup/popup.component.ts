@@ -24,10 +24,10 @@ export class PopupComponent implements AfterViewInit {
     toggleLogin(value: boolean | string) {
 
         //open awork login page in new tab
-        var redirectUri = chrome.identity.getRedirectURL();
+        const redirectUri = chrome.identity.getRedirectURL();
 
         //redirect url
-        var auth_url = `${environment.awork.url}/accounts/authorize?client_id=${environment.awork.clientId}&redirect_uri=${redirectUri}&scope=${environment.awork.scope}&response_type=code&grant_type=authorization_code`;
+        const auth_url = `${environment.awork.url}/accounts/authorize?client_id=${environment.awork.clientId}&redirect_uri=${redirectUri}&scope=${environment.awork.scope}&response_type=code&grant_type=authorization_code`;
 
         chrome.identity.launchWebAuthFlow({ url: auth_url, interactive: true }, (redirect_Url) => {
 
@@ -80,7 +80,7 @@ export class PopupComponent implements AfterViewInit {
 
     /* fetch token from local storage  */
     async fetchToken() {
-        let data: { token: string } = await this.chrome_service.getStorageData();
+        const data: { token: string } = await this.chrome_service.getStorageData();
 
         if (data?.token) {
             this.isLoggedIn = true
