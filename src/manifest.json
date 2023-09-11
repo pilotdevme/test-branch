@@ -9,8 +9,10 @@
         "tabs",
         "storage",
         "scripting",
-        "activeTab"
+        "activeTab",
+        "identity"
     ],
+    "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAh1m3UNCIOS4AZqugTK87RMONVOWSMGb/ozvx6WkJvhs8dTEaXMgsmRqOZ0IlvrAxLt44Jr23uWAlsk+gU1pul2o98A/cwg28odkQeaTbc6V6UwiFD7VhgXZ+L1PxSieJ1OQyRlBPMa7QWcA45ccu4Xee/v9ulfs7N8Tx8ESATJZ1QbcGJeBjFLm+4TmZKm7gaopUp0pOpvOG9j2mBr2r7pfhrEheuh6A1AXdXjwKE4kh1DPgsI1t7wTinosW9CGzzwvuHcl5HT0b6phMV2ly6HXfXSkPGuM4Tip2pc2SOHnJ5rnquiFhv+mmlkDIxUa6w3epNkxfUlLNeDmZx+5ZVQIDAQAB",
     "content_scripts": [
         {
             "matches": [

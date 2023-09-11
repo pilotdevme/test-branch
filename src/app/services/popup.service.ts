@@ -1,21 +1,29 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { environment } from "src/environments/environment";
-import { IProject, IStartTimeBody, ITask, ITimeEntry, IWorkType } from "../popup/components/timer/timer.interface";
-
+import { IGetToken, IProject, IStartTimeBody, ITask, ITimeEntry, IWorkType } from "../popup/components/timer/timer.interface";
+import { IAccessTokenBody } from "../popup/popup.interface";
+import { ChromeStorageService } from "./chromeService.service";
 @Injectable({
     providedIn: 'root'
 })
 export class PopupService {
-    public header: HttpHeaders;
+    public header: HttpHeaders = new HttpHeaders({});
+    public token: string = "";
+
 
     /* get token and set http header */
     constructor(
         private http: HttpClient,
+        private chrome_service: ChromeStorageService
     ) {
-        this.header = new HttpHeaders({
-            "Authorization": `Bearer ${environment.awork.token}`
-        });
+        this.chrome_service.getStorageData().then(data => {
+            console.log("chrome service.token", data.token)
+            this.token = data.token
+            this.header = new HttpHeaders({
+                "Authorization": `Bearer ${data.token}`
+            });
+        })
     }
 
     /* get projects lists and time entries */
@@ -67,4 +75,28 @@ export class PopupService {
     public getTypeOfWork() {
         return this.http.get<IWorkType[]>(`${environment.awork.url}/typeofwork`, { headers: this.header })
     }
+
+    public getToken(payload: IAccessTokenBody) {
+
+        const client_id = `${environment.awork.clientId}`;
+        const client_secret = `${environment.awork.clientSecret}`;
+        // Create a Basic Authentication token by base64 encoding client_id:client_secret
+        const base64Credentials = btoa(client_id + ':' + client_secret);
+
+        // Set the HTTP headers
+        const headers = new HttpHeaders({
+            'Authorization': 'Basic ' + base64Credentials,
+            'Content-Type': 'application/x-www-form-urlencoded'
+        });
+
+        const body = new HttpParams()
+            .set('grant_type', payload.grant_type)
+            .set('code', payload.code)
+            .set('client_id', payload.client_id)
+            .set('redirect_uri', payload.redirect_uri);
+
+
+        return this.http.post<IGetToken>(`${environment.awork.url}/accounts/token`, body, { headers: headers })
+    }
+
 }

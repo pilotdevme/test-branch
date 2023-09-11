@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA, Component, OnInit } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
@@ -36,13 +36,14 @@ export class TimerComponent implements OnInit {
     private time: ITime = enumTime;
 
 
-    constructor(private popupService: PopupService, private chrome_service: ChromeStorageService) { }
+    constructor(private popupService: PopupService, private chrome_service: ChromeStorageService, private changeDetectorRef: ChangeDetectorRef) { }
 
     /* get project details and timer */
     getTimers() {
         try {
             this.popupService.getTimeEntries().subscribe((response: ITimeEntry[]) => {
                 this.timeEntries = response;
+                this.changeDetectorRef.detectChanges();
             });
         }
         catch (e) { }
@@ -93,7 +94,8 @@ export class TimerComponent implements OnInit {
     /* get work types */
     getWorkTypes() {
         this.popupService.getTypeOfWork().subscribe((response: IWorkType[]) => {
-            this.list.workTypes = response
+            this.list.workTypes = response;
+            this.changeDetectorRef.detectChanges()
         });
     }
 
@@ -108,6 +110,7 @@ export class TimerComponent implements OnInit {
             if (dropdown) {
                 dropdown.options = dropdownOptions
             }
+            this.changeDetectorRef.detectChanges()
         });
     }
 
@@ -122,6 +125,7 @@ export class TimerComponent implements OnInit {
             if (dropdown) {
                 dropdown.options = dropdownOptions
             }
+            this.changeDetectorRef.detectChanges()
         });
     }
 
@@ -260,11 +264,17 @@ export class TimerComponent implements OnInit {
         }
     }
 
-    /*on mounted function*/
-    ngOnInit(): void {
+    async loadAllData() {
+        const data: any = await this.chrome_service.getStorageData();
         this.getTimers();
         this.getProjects();
         this.getWorkTypes();
-        this.fetchTimeStamp()
+        this.fetchTimeStamp();
+    }
+
+    /*on mounted function*/
+    ngOnInit(): void {
+        this.loadAllData();
+
     }
 }
