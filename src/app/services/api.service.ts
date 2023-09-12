@@ -1,13 +1,13 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { environment } from "src/environments/environment";
-import { IGetToken, IProject, IStartTimeBody, ITask, ITimeEntry, IWorkType } from "../popup/components/timer/timer.interface";
-import { IAccessTokenBody } from "../popup/popup.interface";
+import { IGetToken, IProject, IStartTimeBody, ITask, ITimeEntry, IUserContactInfo, IWorkType } from "../common/common.interface";
+import { IAccessTokenBody } from "../common/common.interface";
 import { ChromeStorageService } from "./chromeService.service";
 @Injectable({
     providedIn: 'root'
 })
-export class PopupService {
+export class ApiService {
     public header: HttpHeaders = new HttpHeaders({});
     public token: string = "";
 
@@ -18,7 +18,6 @@ export class PopupService {
         private chrome_service: ChromeStorageService
     ) {
         this.chrome_service.getStorageData().then(data => {
-            console.log("chrome service.token", data.token)
             this.token = data.token
             this.header = new HttpHeaders({
                 "Authorization": `Bearer ${data.token}`
@@ -76,6 +75,7 @@ export class PopupService {
         return this.http.get<IWorkType[]>(`${environment.awork.url}/typeofwork`, { headers: this.header })
     }
 
+    /* get access token */
     public getToken(payload: IAccessTokenBody) {
 
         const client_id = `${environment.awork.clientId}`;
@@ -95,8 +95,11 @@ export class PopupService {
             .set('client_id', payload.client_id)
             .set('redirect_uri', payload.redirect_uri);
 
-
         return this.http.post<IGetToken>(`${environment.awork.url}/accounts/token`, body, { headers: headers })
     }
 
+    /* get loggedIn user */
+    public getLoggedInUser() {
+        return this.http.get<IUserContactInfo>(`${environment.awork.url}/me`, { headers: this.header })
+    }
 }

@@ -10,11 +10,10 @@ export class LoginComponent implements OnInit {
     @Input() login: boolean = false;
     @Output() toggleLogin = new EventEmitter();
     @Output() toggleSignup = new EventEmitter();
+   
 
     /* get data on mounted */
-    ngOnInit(): void {
-        console.log("input", this.login);
-    }
+    ngOnInit(): void {}
     
     /* login button click handler */
     handleLogin() {

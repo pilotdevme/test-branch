@@ -34,7 +34,7 @@ $content-width: calc(100% - 40px);
 }
 
 .aw-2-w-main {
-    min-width: 450px;
+    min-width: 470px;
     max-width: 600px;
     min-height: 430px;
 }
@@ -110,4 +110,81 @@ $content-width: calc(100% - 40px);
 
 .aw-2-project--note {
     color: #{$gray-light-400}
+}
+
+.aw-2-h--39 {
+    height: 39px;
+}
+
+.aw-2-w--100 {
+    width: 100%;
+}
+
+
+.aw-2-page-layout {
+    padding: 56px 84px 119px 84px;
+}
+
+.aw-2-mb-84 {
+    margin-bottom: 84px;
+}
+
+.aw-2-option-heading {
+    @include font-size(l);
+    font-weight: $font-weight-bold;
+    margin-right: 12px;
+    color: $gray-light-900;
+}
+
+.aw-2-option-subheading {
+    @include font-size(s);
+    font-weight: $font-weight-semi;
+    color: $gray-light-500;
+}
+
+.aw-2-option-border-col {
+    border-color: $gray-light-200;
+}
+
+.aw-2-option-search-width {
+    width: 244px;
+}
+
+.aw-2-fw-bold {
+    font-weight: $font-weight-bold;
+}
+
+.aw-2-fw-semi {
+    font-weight: $font-weight-semi;
+}
+
+.aw-2-mx-width-1024 {
+    max-width: 1024px;
+    margin-inline: auto;
+}
+
+.aw-2-mb {
+    margin-bottom: 15px;
+}
+
+.aw-2-mt {
+    margin-top: 15px;
+}
+
+.aw-2-task-text-width {
+    max-width: 150px;
+}
+
+
+/* need to unset the width for long text in the dropdown */
+.cdk-overlay-container.popup-overlay-container .popup {
+    width: unset !important;
+}
+
+/* using ellipsis for long task on select box */
+.dropdown-field__button-container span{
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 50px;
+    text-overflow: ellipsis;
 }

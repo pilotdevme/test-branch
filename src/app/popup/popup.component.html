@@ -9,6 +9,8 @@
     </div>
      <!-- time tracking screen -->
     <ng-template #timerscreen>
-        <timer-login></timer-login>
+        <timer-login
+        (handelLogout)="handelLogout($event)"
+        ></timer-login>
     </ng-template>
 </div>

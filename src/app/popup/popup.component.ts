@@ -4,8 +4,8 @@ import { LoginComponent } from './components/auth/auth.component';
 import { TimerComponent } from './components/timer/timer.component';
 import { NgIf, NgTemplateOutlet } from '@angular/common';
 import { ChromeStorageService } from '../services/chromeService.service';
-import { PopupService } from '../services/popup.service';
-import { IGetToken } from './components/timer/timer.interface';
+import { ApiService } from '../services/api.service';
+import { IGetToken } from '../common/common.interface';
 
 @Component({
     standalone: true,
@@ -13,12 +13,12 @@ import { IGetToken } from './components/timer/timer.interface';
     templateUrl: './popup.component.html',
     styleUrls: ['./popup.component.scss'],
     imports: [LoginComponent, TimerComponent, NgIf, NgTemplateOutlet],
-    providers: [PopupService],
+    providers: [ApiService],
 })
 export class PopupComponent implements AfterViewInit {
     public isLoggedIn: boolean = false;
 
-    constructor(private popupService: PopupService, private chrome_service: ChromeStorageService, private changeDetectorRef: ChangeDetectorRef) { }
+    constructor(private apiService: ApiService, private chrome_service: ChromeStorageService, private changeDetectorRef: ChangeDetectorRef) { }
 
     /* login button click listener */
     toggleLogin(value: boolean | string) {
@@ -51,27 +51,28 @@ export class PopupComponent implements AfterViewInit {
                     "redirect_uri": `${redirectUri}`
                 };
 
-                this.popupService.getToken(body).subscribe((response: IGetToken) => {
+                this.apiService.getToken(body).subscribe((response: IGetToken) => {
                     if (response.access_token) {
                         this.isLoggedIn = true
                         this.chrome_service.setStorageData({ token: `${response.access_token}` })
                         this.changeDetectorRef.detectChanges()
-                        // this.popupService.setHeader({ token: response.access_token })
                     }
                 });
             }
         });
-
-        // chrome.tabs.create({ url: auth_url })
-        // save token in extension local storage
-        // this.chrome_service.setStorageData({ token: `${environment.awork.token}` })
-        // this.isLoggedIn = true;
     }
 
     /* signUp button click listener */
     toggleSignup(value: boolean | string) {
         //temporarily just logging in.
         this.isLoggedIn = true
+    }
+
+    /* signUp button click listener */
+    handelLogout(value: boolean | string) {
+        //temporarily just logging in.
+        this.isLoggedIn = false;
+        this.changeDetectorRef.detectChanges()
     }
 
     ngAfterViewInit(): void {

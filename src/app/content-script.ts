@@ -1,45 +1,59 @@
+// Define the styles as a JavaScript object, for styling the content html element body
+const iframeStyles = {
+    border: '0',
+    height: '40px',
+    width: '135px',
+    position: 'fixed',
+    top: '7%',
+    right: '10px',
+    zIndex: '9999',
+    textAlign: 'center',
+};
+
 /*
  * Imports in this file needs to be relative for gulp build to work.
- *
- * In case if you move or rename this file, don't forget to change
- * it's path in gulpfile.js.
+ * In case if you move or rename this file, don't forget to change it's path in gulpfile.js.
  */
 
 class ContentScript {
-
-    // Add <iframe> with SampleComponent page to the body.
+    // Add <iframe> with ContentComponent page to the body.
     public constructor() {
-        const samplePageUrl: string = chrome.runtime.getURL('index.html#/sample');
 
-        const samplePageFrame: HTMLIFrameElement = document.createElement('iframe');
-        samplePageFrame.src = samplePageUrl;
+        chrome.storage.local.get(data => {
+            let showContent = false;
+            let { allowedSites, token } = data;
 
-        const smaplePageFrameParent: HTMLElement = document.body;
-        smaplePageFrameParent.append(samplePageFrame);
+            if (!token) {
+                return
+            }
 
-        samplePageFrame.style.border = '0';
-        samplePageFrame.style.height = '60px';
-        samplePageFrame.style.width = '60px';
+            if (!allowedSites) {
+                allowedSites = { 'github': true };
+            }
+
+            for (const key in allowedSites) {
+                if (window.location.hostname.includes(key) && allowedSites[key]) {
+                    showContent = true
+                }
+            }
+
+            if (!showContent) {
+                return
+            }
+
+            /*append HTML container for content script*/
+            const contentPageUrl: string = chrome.runtime.getURL('index.html#/content');
+            const contentPageFrame: HTMLIFrameElement = document.createElement('iframe');
+            contentPageFrame.src = contentPageUrl;
+
+            /*append HTML container body*/
+            const contentPageFrameParent: HTMLElement = document.body;
+            contentPageFrameParent.append(contentPageFrame);
+
+            // Apply the styles to the iframe element
+            Object.assign(contentPageFrame.style, iframeStyles);    
+        })
     }
-
-    /*
-     * Use this function if you want to make <iframe> responsive.
-     * Achieves effect similar to bootstrap's embeds.
-     * See: https://getbootstrap.com/docs/4.2/utilities/embed/
-     */
-    private setResponsiveFrameStyles(parent: HTMLElement, iframe: HTMLIFrameElement): void {
-        parent.style.overflow = 'hidden';
-        parent.style.paddingTop = '56.25%';
-        parent.style.position = 'relative';
-
-        iframe.style.border = '0';
-        iframe.style.height = '100%';
-        iframe.style.left = '0';
-        iframe.style.position = 'absolute';
-        iframe.style.top = '0';
-        iframe.style.width = '100%';
-    }
-
 }
 
 // tslint:disable-next-line:no-unused-expression
