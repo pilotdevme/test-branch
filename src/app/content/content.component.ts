@@ -69,7 +69,6 @@ export class ContentComponent implements OnInit {
         };
         this.apiService.startTimeEntry(body).subscribe((response: ITimeEntry) => {
             this.timerRunning = true;
-            this.changeDetectorRef.detectChanges(); // Manually trigger change detection
             this.chromeService.setStorageData({ running_time: this.timerRunning });
             this.chromeService.setStorageData({ timer_start_time: response?.startTimeLocal });
             if (response) {
@@ -93,6 +92,7 @@ export class ContentComponent implements OnInit {
             }
           }
         );
+        this.changeDetectorRef.detectChanges(); // Manually trigger change detection
         chrome.runtime.sendMessage('timerStart')
     }
 
@@ -100,7 +100,6 @@ export class ContentComponent implements OnInit {
     stopTimer() {
         this.apiService.endTimeEntry().subscribe(() => {
             this.timerRunning = false;
-            this.changeDetectorRef.detectChanges(); // Manually trigger change detection
             this.chromeService.resetOnStopTimer()
 
             if (this.timerRunning === false) {
@@ -124,6 +123,7 @@ export class ContentComponent implements OnInit {
             }
           }
         );
+        this.changeDetectorRef.detectChanges(); // Manually trigger change detection
         chrome.runtime.sendMessage('timerStop')
     }
 
@@ -144,7 +144,7 @@ export class ContentComponent implements OnInit {
         this.timeDifference = this.commonService.calculateTimeDifference(timeDifference)
 
         this.changeDetectorRef.detectChanges(); // Manually trigger change detection
-        return `${this.timeDifference.hour}h ${this.timeDifference.minute}m`
+        return `${this.timeDifference.hour}h${this.timeDifference.minute}m`
     }
 
     /* get start time interval and current running time interval */

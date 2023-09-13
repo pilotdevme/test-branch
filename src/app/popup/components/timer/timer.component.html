@@ -4,8 +4,8 @@
         <div class="aw-2-flx aw-2-flx--center aw-2-flx--content-between aw-2-mb--xl">
             <a href="#" class="aw-2-d--block"><img src="/assets/images/logo.svg" alt="logo" /></a>
             <div class="">
+                <a href="#" class=" aw-2-mr--l"><i class="aw-2-icn">open_in_new</i></a>
                 <a href='#' (click)="openSettings()"><i class="aw-2-icn">settings</i></a>
-                <a href="#" class=" aw-2-ml--l"><i class="aw-2-icn">open_in_new</i></a>
             </div>
         </div>
 
@@ -71,10 +71,10 @@
 
     <!-- tabel for project entries -->
     <div class="aw-2--table aw-2-px--l">
-        <h3 class="aw-2-txt--bold aw-2-txt--m aw-2--head-color aw-2-mb--l">Recently tracked</h3>
+        <h3 class="aw-2-txt--bold aw-2-txt--m aw-2--head-color">Recently tracked</h3>
         <table class="aw-2-tbl aw-2-p--l">
             <tbody *ngIf="timeEntries.length != 0" class="aw-2-tbl-content-list">
-                <tr *ngFor="let timeEntry of timeEntries" class="timeentry-row">
+                <tr *ngFor="let timeEntry of timeEntries" class="aw-2-table-row">
                     <td class="aw-2-w--full aw-2-py--m">
                         <div class="aw-2-flx aw-2-flx--center aw-2-txt--truncate">
                             <img src="/assets/images/briefcase.svg" alt="briefcase" />
@@ -121,8 +121,8 @@
                 </tr>
             </tbody>
             <tbody *ngIf="timeEntries.length == 0">
-                <tr>
-                    <td class="text-center">No Data Found.</td>
+                <tr class="aw-2-table-row">
+                    <td class="text-center">No Data Found</td>
                 </tr>
             </tbody>
         </table>

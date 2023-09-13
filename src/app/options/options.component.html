@@ -11,6 +11,7 @@
             <span class="aw-2-option-heading">Layout box title </span><span class="aw-2-option-subheading ">Activate
                 sites where you want to see the awork timer</span>
         </div>
+    <div class="aw-2-options-border">
         <!-- github checkbox -->
         <div class="aw-2-bb aw-2-option-border-col aw-2-p--m">
             <aw2-checkbox
@@ -47,18 +48,19 @@
                 (change)="checkboxChange($event, 'hellohq')"
             ></aw2-checkbox>
         </div>
+    </div>
 
         <div class=" aw-2-mt--xxxxl aw-2-mb--l">
             <span class="aw-2-option-heading">Layout box title </span>
         </div>
          <!-- project list dropdown -->
-        <div class="aw-2-flx aw-2-flx--content-between aw-2-flx--center">
+        <div class="aw-2-flx aw-2-flx--content-between aw-2-flx--center aw-2-options-border">
             <div class="aw-2-icn--slate aw-2-txt--body-regular aw-2-txt--bold">Default project, which should be selected
                 when starting timer</div>
             <div><aw2-dropdown-field
                     id="optionsProjectsDropdown"
                     class="aw-2-option-search-width"
-                    label="Projects"
+                    label=""
                     (changed)="projectChange($event)"
                 ></aw2-dropdown-field></div>
         </div>
@@ -67,7 +69,7 @@
             <span class="aw-2-option-heading">Layout box title </span>
         </div>
         <!-- loggedIn user & logput button -->
-        <div class="aw-2-flx aw-2-flx--content-between aw-2-flx--center aw-2-mb--xxxxl" *ngIf="isLoggedIn">
+        <div class="aw-2-flx aw-2-flx--content-between aw-2-flx--center aw-2-mb--xxxxl aw-2-options-border" *ngIf="isLoggedIn">
             <div class="aw-2-icn--slate aw-2-txt--body-regular">
                 <span class=" aw-2-txt--bold">You are logged as:</span>
                 <span class="aw-2-txt--midnight aw-2-fw-bold">
@@ -90,13 +92,13 @@
             <div class="aw-2-txt--body-regular aw-2-fw-semi aw-2-icn--slate">
                 Großer Burstah 36/38
             </div>
-            <div class="aw-2-txt--body-regular aw-2-fw-semi aw-2-icn--slate">
+            <div class="aw-2-txt--body-regular aw-2-fw-semi aw-2-icn--slate aw-2-mb">
                 20457 Hamburg German
             </div>
             <div class="aw-2-txt--body-regular aw-2-fw-semi aw-2-icn--slate">
                 HRB Hamburg 172 488
             </div>
-            <div class="aw-2-txt--body-regular aw-2-fw-semi aw-2-icn--slate">
+            <div class="aw-2-txt--body-regular aw-2-fw-semi aw-2-icn--slate aw-2-mb">
                 Directors: Lucas Bauche, Nils Czernig, Tobias Hagenau
             </div>
             <div class="aw-2-icn--slate">

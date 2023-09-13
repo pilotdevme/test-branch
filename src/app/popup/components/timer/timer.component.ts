@@ -155,7 +155,6 @@ export class TimerComponent implements OnInit {
     getProjects() {
         this.apiService.getProjects()
             .subscribe((response: IProject[]) => {
-
                 this.list.projects = response;
                 const dropdownOptions = this.list.projects.map(project => ({ value: project.id, label: project.name, icon: "bell" }))
 
@@ -256,7 +255,7 @@ export class TimerComponent implements OnInit {
         const timeDifference = Math.abs(start_loc_time - end_loc_time);
         this.timeDifference = this.commonService.calculateTimeDifference(timeDifference)
 
-        return `${this.timeDifference.hour}h ${this.timeDifference.minute}m`
+        return `${this.timeDifference.hour}h${this.timeDifference.minute}m`
     }
 
     /* get start time interval and current running time interval */
