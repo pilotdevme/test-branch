@@ -364,6 +364,10 @@ export class TimerComponent implements OnInit {
         }
     }
 
+    openDashboard(){
+        chrome.tabs.create({url: 'https://awork.com'});
+    }
+
     listenEvents() {
         chrome.runtime.onMessage.addListener((request, sender, senderResponse) => {
             switch (request.action) {
