@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ChromeStorageService } from '../services/chromeService.service';
 import { ApiService } from '../services/api.service';
 import { HttpClientModule } from '@angular/common/http';
@@ -54,11 +54,11 @@ export class OptionsComponent implements OnInit {
                 dropdown.options = dropdownOptions
             }
             this.changeDetectorRef.detectChanges()
-        },(error) => {
-            if (error.status === 401) {               
-              this.isLoggedIn = false;
-            } else {}
-          }
+        }, (error) => {
+            if (error.status === 401) {
+                this.isLoggedIn = false;
+            } else { }
+        }
         );
     }
 
@@ -66,20 +66,20 @@ export class OptionsComponent implements OnInit {
     stopTimer() {
         this.apiService.endTimeEntry().subscribe(() => {
             this.chromeService.resetOnStopTimer()
-            chrome.runtime.sendMessage('timerStop')
+            chrome.runtime.sendMessage({ action: 'timerStop' })
             this.logout();
-        },(error) => {
-            if (error.status === 401) {               
-              this.isLoggedIn = false;
-            } else {}
-          }
+        }, (error) => {
+            if (error.status === 401) {
+                this.isLoggedIn = false;
+            } else { }
+        }
         );
     }
 
     /*logout*/
     logout() {
         this.chromeService.setStorageData({ token: "" })
-        chrome.runtime.sendMessage('loggedOut');
+        chrome.runtime.sendMessage({ action: 'loggedOut' });
         this.isLoggedIn = false;
     }
 
@@ -87,12 +87,12 @@ export class OptionsComponent implements OnInit {
     getLoggedInUser() {
         this.apiService.getLoggedInUser().subscribe((response: IUserContactInfo) => {
             const [user] = response?.userContactInfos
-            this.userEmail = user?.value    
-        },(error) => {
-            if (error.status === 401) {               
-              this.isLoggedIn = false;
-            } else {}
-          }
+            this.userEmail = user?.value
+        }, (error) => {
+            if (error.status === 401) {
+                this.isLoggedIn = false;
+            } else { }
+        }
         );
     }
 

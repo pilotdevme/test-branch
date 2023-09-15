@@ -84,9 +84,9 @@ export class TimerComponent implements OnInit {
                 /*using 1000 ms interval to increment time by 1 second*/
                 this.intervalSubscription = interval(1000).subscribe(() => this.updateTimer());
             }
-            chrome.runtime.sendMessage('syncStartTimer')
+            chrome.runtime.sendMessage({ action: 'syncStartTimer' })
             this.changeDetectorRef.detectChanges(); // Manually trigger change detection
-            chrome.runtime.sendMessage('timerStart')
+            chrome.runtime.sendMessage({ action: 'timerStart' })
 
         }, (error) => {
             if (error.status === 401) {
@@ -105,7 +105,7 @@ export class TimerComponent implements OnInit {
             this.changeDetectorRef.detectChanges(); // Manually trigger change detection
 
             if (this.timerRunning === false) {
-                chrome.runtime.sendMessage('syncStopTimer')
+                chrome.runtime.sendMessage({ action: 'syncStopTimer' })
                 this.intervalSubscription.unsubscribe();
                 this.timer = initialTimerValue;
                 this.time = {
@@ -117,7 +117,7 @@ export class TimerComponent implements OnInit {
             }
             this.changeDetectorRef.detectChanges(); // Manually trigger change detection
             this.getTimers();
-            chrome.runtime.sendMessage('timerStop')
+            chrome.runtime.sendMessage({ action: 'timerStop' })
 
         }, (error) => {
             if (error.status === 401) {
@@ -332,7 +332,7 @@ export class TimerComponent implements OnInit {
             }
         }
         else {
-            chrome.runtime.sendMessage('loggedIn')
+            chrome.runtime.sendMessage({ action: 'loggedIn' })
         }
 
         /* get tasks by the selected project id */
@@ -366,7 +366,7 @@ export class TimerComponent implements OnInit {
 
     listenEvents() {
         chrome.runtime.onMessage.addListener((request, sender, senderResponse) => {
-            switch (request) {
+            switch (request.action) {
                 case 'stopTimerAPI':
                     this.stopTimer()
                     break;

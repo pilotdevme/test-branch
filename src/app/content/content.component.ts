@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA, Component, ViewEncapsulation, OnInit, ChangeDetectorRef} from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Component, ViewEncapsulation, OnInit, ChangeDetectorRef } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { ApiService } from '../services/api.service';
 import { interval, Subscription } from 'rxjs';
@@ -46,17 +46,17 @@ export class ContentComponent implements OnInit {
     getWorkTypes() {
         this.apiService.getTypeOfWork().subscribe((response: IWorkType[]) => {
             this.workTypes = response;
-        },(error) => {
-            if (error.status === 401) {               
-              // Handle the 401 Unauthorized error here
-              console.error('Unauthorized. Redirecting to login page or showing an error message.');
-              this.chromeService.setStorageData({token: ""})
-              window.location.reload();
+        }, (error) => {
+            if (error.status === 401) {
+                // Handle the 401 Unauthorized error here
+                console.error('Unauthorized. Redirecting to login page or showing an error message.');
+                this.chromeService.setStorageData({ token: "" })
+                window.location.reload();
             } else {
-              // Handle other errors
-              console.error('An error occurred:', error);
+                // Handle other errors
+                console.error('An error occurred:', error);
             }
-          }
+        }
         );
     }
 
@@ -77,23 +77,23 @@ export class ContentComponent implements OnInit {
                     minutes: 0,
                     seconds: 0
                 };
-                /*using 1000 ms interval to increment time by 1 second*/ 
+                /*using 1000 ms interval to increment time by 1 second*/
                 this.intervalSubscription = interval(1000).subscribe(() => this.updateTimer());
             }
-        },(error) => {
-            if (error.status === 401) {               
-              // Handle the 401 Unauthorized error here
-              console.error('Unauthorized. Redirecting to login page or showing an error message.');
-              this.chromeService.setStorageData({ token: "" });
-              window.location.reload();
+        }, (error) => {
+            if (error.status === 401) {
+                // Handle the 401 Unauthorized error here
+                console.error('Unauthorized. Redirecting to login page or showing an error message.');
+                this.chromeService.setStorageData({ token: "" });
+                window.location.reload();
             } else {
-              // Handle other errors
-              console.error('An error occurred:', error);
+                // Handle other errors
+                console.error('An error occurred:', error);
             }
-          }
+        }
         );
         this.changeDetectorRef.detectChanges(); // Manually trigger change detection
-        chrome.runtime.sendMessage('timerStart')
+        chrome.runtime.sendMessage({ action: 'timerStart' })
     }
 
     /*stop time interval function*/
@@ -111,20 +111,20 @@ export class ContentComponent implements OnInit {
                     seconds: 0
                 };
             }
-        },(error) => {
-            if (error.status === 401) {               
-              // Handle the 401 Unauthorized error here
-              console.error('Unauthorized. Redirecting to login page or showing an error message.');
-              this.chromeService.setStorageData({ token: "" });
-              window.location.reload();
+        }, (error) => {
+            if (error.status === 401) {
+                // Handle the 401 Unauthorized error here
+                console.error('Unauthorized. Redirecting to login page or showing an error message.');
+                this.chromeService.setStorageData({ token: "" });
+                window.location.reload();
             } else {
-              // Handle other errors
-              console.error('An error occurred:', error);
+                // Handle other errors
+                console.error('An error occurred:', error);
             }
-          }
+        }
         );
         this.changeDetectorRef.detectChanges(); // Manually trigger change detection
-        chrome.runtime.sendMessage('timerStop')
+        chrome.runtime.sendMessage({ action: 'timerStop' })
     }
 
     /* format time string value */
@@ -194,7 +194,7 @@ export class ContentComponent implements OnInit {
                 this.time.hours = this.timeDifference.hour;
                 this.time.minutes = this.timeDifference.minute;
                 this.time.seconds = this.timeDifference.second;
-                /*using 1000 ms interval to increment time by 1 second*/ 
+                /*using 1000 ms interval to increment time by 1 second*/
                 this.intervalSubscription = interval(1000).subscribe(() => this.updateTimer());
             }
         }
@@ -202,19 +202,19 @@ export class ContentComponent implements OnInit {
 
     /* get loggedIn user */
     getLoggedInUser() {
-        this.apiService.getLoggedInUser().subscribe((response: IUserContactInfo) => {}
-        ,(error) => {
-            if (error.status === 401) {               
-              // Handle the 401 Unauthorized error here
-              this.chromeService.setStorageData({ token: "" });
-              chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-                chrome.tabs.reload(tabs[0].id || 0);
-              });
-            } else {
-              // Handle other errors
-              console.error('An error occurred:', error);
+        this.apiService.getLoggedInUser().subscribe((response: IUserContactInfo) => { }
+            , (error) => {
+                if (error.status === 401) {
+                    // Handle the 401 Unauthorized error here
+                    this.chromeService.setStorageData({ token: "" });
+                    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+                        chrome.tabs.reload(tabs[0].id || 0);
+                    });
+                } else {
+                    // Handle other errors
+                    console.error('An error occurred:', error);
+                }
             }
-          }
         );
     }
 
@@ -236,7 +236,7 @@ export class ContentComponent implements OnInit {
         chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
             // Check if the message has the data you're expecting
-            switch (request) {
+            switch (request.action) {
                 case 'syncStartTimer':
                     this.fetchTimeStamp();
                     this.timer = initialTimerValue;
@@ -255,7 +255,7 @@ export class ContentComponent implements OnInit {
 
                 default:
                     break;
-                
+
             }
         });
 

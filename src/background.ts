@@ -8,7 +8,7 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
 
 chrome.runtime.onMessage.addListener((request, sender, senderResponse) => {
     console.log("listener", request, sender, senderResponse);
-    switch (request) {
+    switch (request.action) {
         case 'loggedIn':
             chrome.action.setIcon({
                 path: {
@@ -50,7 +50,25 @@ chrome.runtime.onMessage.addListener((request, sender, senderResponse) => {
             });
             break;
         case 'stopTimer':
-            chrome.runtime.sendMessage('stopTimerAPI')
+            chrome.runtime.sendMessage({ action: 'stopTimerAPI' })
+            break;
+        case 'login-init':
+            const redirectUri = chrome.identity.getRedirectURL();
+            const auth_url = `https://api.awork.io/api/v1/accounts/authorize?client_id=awork-ext-1&redirect_uri=${redirectUri}&scope=offline_access&response_type=code&grant_type=authorization_code`;
+            chrome.identity.launchWebAuthFlow({ url: auth_url, interactive: true }, (redirect_Url) => {
+                if (chrome.runtime?.lastError || !redirect_Url) {
+                    console.error('Authorization failed:', chrome.runtime?.lastError);
+                    return;
+                } else if (!redirect_Url) {
+                    return console.error('Authorization failed: Redirect URL is empty');
+                }
+                //get authroization code from redirect url
+                const url = new URL(redirect_Url);
+                const authorizationCode = url.searchParams.get('code');
+                if (authorizationCode) {
+                    chrome.storage.local.set({ authorizationCode })
+                }
+            });
             break;
         default:
             senderResponse('')

@@ -17,55 +17,41 @@ import { IGetToken } from '../common/common.interface';
 })
 export class PopupComponent implements AfterViewInit {
     public isLoggedIn: boolean = false;
+    public isLoading: boolean = true;
+    private redirectUri = '';
 
-    constructor(private apiService: ApiService, private chrome_service: ChromeStorageService, private changeDetectorRef: ChangeDetectorRef) { }
-
+    constructor(private apiService: ApiService, private chromeService: ChromeStorageService, private changeDetectorRef: ChangeDetectorRef) { }
     /* login button click listener */
-    toggleLogin(value: boolean | string) {
+    toggleLogin() {
+        //open awork login page
+        chrome.runtime.sendMessage({ action: 'login-init' })
+    }
 
-        //open awork login page in new tab
-        const redirectUri = chrome.identity.getRedirectURL();
+    fetchAccessToken(authorizationCode: string) {
+        const body = {
+            "grant_type": 'authorization_code',
+            "code": authorizationCode,
+            "client_id": `${environment.awork.clientId}`,
+            "redirect_uri": `${this.redirectUri}`
+        };
 
-        //redirect url
-        const auth_url = `${environment.awork.url}/accounts/authorize?client_id=${environment.awork.clientId}&redirect_uri=${redirectUri}&scope=${environment.awork.scope}&response_type=code&grant_type=authorization_code`;
-
-        chrome.identity.launchWebAuthFlow({ url: auth_url, interactive: true }, (redirect_Url) => {
-
-            if (chrome.runtime.lastError || !redirect_Url) {
-                console.error('Authorization failed:', chrome.runtime.lastError);
-                return;
-            } else if (!redirect_Url) {
-                return console.error('Authorization failed: Redirect URL is empty');
+        this.apiService.getToken(body).subscribe((response: IGetToken) => {
+            if (response.access_token) {
+                this.isLoggedIn = true;
+                this.isLoading = false;
+                this.chromeService.setStorageData({ token: `${response.access_token}` })
+                this.chromeService.setStorageData({ authorizationCode: '' })
+                this.changeDetectorRef.detectChanges()
             }
-
-            //get authroization code from redirect url
-            const url = new URL(redirect_Url);
-            const authorizationCode = url.searchParams.get('code');
-
-            if (authorizationCode) {
-                //access token api 
-                const body = {
-                    "grant_type": 'authorization_code',
-                    "code": authorizationCode,
-                    "client_id": `${environment.awork.clientId}`,
-                    "redirect_uri": `${redirectUri}`
-                };
-
-                this.apiService.getToken(body).subscribe((response: IGetToken) => {
-                    if (response.access_token) {
-                        this.isLoggedIn = true
-                        this.chrome_service.setStorageData({ token: `${response.access_token}` })
-                        this.changeDetectorRef.detectChanges()
-                    }
-                });
-            }
+        }, (error) => {
+            this.isLoading = false;
         });
     }
 
     /* signUp button click listener */
     toggleSignup(value: boolean | string) {
         //temporarily just logging in.
-        this.isLoggedIn = true
+        // this.isLoggedIn = true
     }
 
     /* signUp button click listener */
@@ -76,15 +62,22 @@ export class PopupComponent implements AfterViewInit {
     }
 
     ngAfterViewInit(): void {
+        this.redirectUri = chrome.identity.getRedirectURL();
         this.fetchToken()
     }
 
     /* fetch token from local storage  */
     async fetchToken() {
-        const data: { token: string } = await this.chrome_service.getStorageData();
-
+        const data: { token: string, authorizationCode: string } = await this.chromeService.getStorageData();
         if (data?.token) {
-            this.isLoggedIn = true
+            this.isLoggedIn = true;
+            this.isLoading = false;
+        }
+        else if (data?.authorizationCode) {
+            this.fetchAccessToken(data?.authorizationCode)
+        }
+        else {
+            this.isLoading = false;
         }
     }
 }

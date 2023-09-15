@@ -25,14 +25,6 @@ $content-width: calc(100% - 40px);
     justify-content: center;
 }
 
-.aw-2-flx--content-between {
-    justify-content: space-between;
-}
-
-.aw-2-flx--content-center {
-    justify-content: center;
-}
-
 .aw-2-w-main {
     min-width: 470px;
     max-width: 600px;
@@ -189,6 +181,10 @@ $content-width: calc(100% - 40px);
     border: 4px solid #F9FCFF;
     border-radius: 18px;
     padding: 8px 24px 8px 24px;
+}
+
+.aw-2-height--100vh{
+    height: 100vh;
 }
 
 /* need to unset the width for long text in the dropdown */
