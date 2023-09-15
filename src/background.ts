@@ -67,6 +67,7 @@ chrome.runtime.onMessage.addListener((request, sender, senderResponse) => {
                 const authorizationCode = url.searchParams.get('code');
                 if (authorizationCode) {
                     chrome.storage.local.set({ authorizationCode })
+                    chrome.runtime.sendMessage({action: 'loggedIn'})
                 }
             });
             break;

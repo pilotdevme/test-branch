@@ -63,7 +63,8 @@ export class PopupComponent implements AfterViewInit {
 
     ngAfterViewInit(): void {
         this.redirectUri = chrome.identity.getRedirectURL();
-        this.fetchToken()
+        this.fetchToken();
+        this.chromeListener();
     }
 
     /* fetch token from local storage  */
@@ -79,5 +80,15 @@ export class PopupComponent implements AfterViewInit {
         else {
             this.isLoading = false;
         }
+    }
+
+    chromeListener(){
+        chrome.runtime.onMessage.addListener((request, sender, senderResponse) => {
+            switch (request.action) {
+                case 'loggedIn': {
+                    this.fetchToken()
+                }
+            }
+        })
     }
 }
