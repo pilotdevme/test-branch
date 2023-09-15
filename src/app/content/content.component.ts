@@ -111,6 +111,8 @@ export class ContentComponent implements OnInit {
                     seconds: 0
                 };
             }
+            this.changeDetectorRef.detectChanges(); // Manually trigger change detection
+            chrome.runtime.sendMessage({ action: 'timerStop' })
         }, (error) => {
             if (error.status === 401) {
                 // Handle the 401 Unauthorized error here
@@ -123,8 +125,6 @@ export class ContentComponent implements OnInit {
             }
         }
         );
-        this.changeDetectorRef.detectChanges(); // Manually trigger change detection
-        chrome.runtime.sendMessage({ action: 'timerStop' })
     }
 
     /* format time string value */
