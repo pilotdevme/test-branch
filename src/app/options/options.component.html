@@ -1,88 +1,60 @@
 <div class="aw-2-page-layout aw-2-mx-width-1024 ">
-    <a
-        href="#"
-        class="aw-2-d--block aw-2-mb-84"
-    ><img
-            src="/assets/images/logo.svg"
-            alt="logo"
-        /></a>
+    <a href="#" class="aw-2-d--block aw-2-mb-84"><img src="/assets/images/logo.svg" alt="logo" /></a>
     <div>
         <div class="aw-2-mb--xl">
-            <span class="aw-2-option-heading">Layout box title </span><span class="aw-2-option-subheading ">Activate
-                sites where you want to see the awork timer</span>
+            <span class="aw-2-option-heading">Layout box title </span>
+            <span class="aw-2-option-subheading ">
+                Activate sites where you want to see the awork timer
+            </span>
         </div>
-    <div class="aw-2-options-border">
-        <!-- github checkbox -->
-        <div class="aw-2-bb aw-2-option-border-col aw-2-p--m">
-            <aw2-checkbox
-                label="Github"
-                class="aw-2-m--s"
-                [value]="selectedSites['github']"
-                (changed)="checkboxChange($event, 'github')"
-            ></aw2-checkbox>
+        <div class="aw-2-options-border">
+            <!-- github checkbox -->
+            <div class="aw-2-bb aw-2-option-border-col aw-2-p--m">
+                <aw2-checkbox label="Github" class="aw-2-m--s" [value]="selectedSites['github']"
+                    (changed)="checkboxChange($event, 'github')"></aw2-checkbox>
+            </div>
+            <!-- Mocco checkbox -->
+            <div class="aw-2-bb aw-2-option-border-col aw-2-p--m">
+                <aw2-checkbox label="Mocco" class="aw-2-m--s" [value]="selectedSites['mocco']"
+                    (changed)="checkboxChange($event, 'mocco')"></aw2-checkbox>
+            </div>
+            <!-- Pipedrive checkbox -->
+            <div class="aw-2-bb aw-2-option-border-col aw-2-p--m">
+                <aw2-checkbox label="Pipedrive" class="aw-2-m--s" [value]="selectedSites['pipedrive']"
+                    (changed)="checkboxChange($event, 'pipedrive')"></aw2-checkbox>
+            </div>
+            <!-- HelloHQ checkbox -->
+            <div class="aw-2-p--m">
+                <aw2-checkbox label="helloHQ" class="aw-2-m--s" [value]="selectedSites['hellohq']"
+                    (change)="checkboxChange($event, 'hellohq')"></aw2-checkbox>
+            </div>
         </div>
-         <!-- Mocco checkbox -->
-        <div class="aw-2-bb aw-2-option-border-col aw-2-p--m">
-            <aw2-checkbox
-                label="Mocco"
-                class="aw-2-m--s"
-                [value]="selectedSites['mocco']"
-                (changed)="checkboxChange($event, 'mocco')"
-            ></aw2-checkbox>
-        </div>
-         <!-- Pipedrive checkbox -->
-        <div class="aw-2-bb aw-2-option-border-col aw-2-p--m">
-            <aw2-checkbox
-                label="Pipedrive"
-                class="aw-2-m--s"
-                [value]="selectedSites['pipedrive']"
-                (changed)="checkboxChange($event, 'pipedrive')"
-            ></aw2-checkbox>
-        </div>
-          <!-- HelloHQ checkbox -->
-        <div class="aw-2-p--m">
-            <aw2-checkbox
-                label="helloHQ"
-                class="aw-2-m--s"
-                [value]="selectedSites['hellohq']"
-                (change)="checkboxChange($event, 'hellohq')"
-            ></aw2-checkbox>
-        </div>
-    </div>
 
         <div class=" aw-2-mt--xxxxl aw-2-mb--l">
             <span class="aw-2-option-heading">Layout box title </span>
         </div>
-         <!-- project list dropdown -->
+        <!-- project list dropdown -->
         <div class="aw-2-flx aw-2-flx--content-between aw-2-flx--center aw-2-options-border">
             <div class="aw-2-icn--slate aw-2-txt--body-regular aw-2-txt--bold">Default project, which should be selected
                 when starting timer</div>
-            <div><aw2-dropdown-field
-                    id="optionsProjectsDropdown"
-                    class="aw-2-option-search-width"
-                    label=""
-                    (changed)="projectChange($event)"
-                ></aw2-dropdown-field></div>
+            <div><aw2-dropdown-field id="optionsProjectsDropdown" class="aw-2-option-search-width" label=""
+                    (changed)="projectChange($event)"></aw2-dropdown-field></div>
         </div>
 
         <div class=" aw-2-mt--xxxxl aw-2-mb--l">
             <span class="aw-2-option-heading">Layout box title </span>
         </div>
         <!-- loggedIn user & logput button -->
-        <div class="aw-2-flx aw-2-flx--content-between aw-2-flx--center aw-2-mb--xxxxl aw-2-options-border" *ngIf="isLoggedIn">
+        <div class="aw-2-flx aw-2-flx--content-between aw-2-flx--center aw-2-mb--xxxxl aw-2-options-border"
+            *ngIf="isLoggedIn">
             <div class="aw-2-icn--slate aw-2-txt--body-regular">
                 <span class=" aw-2-txt--bold">You are logged as:</span>
                 <span class="aw-2-txt--midnight aw-2-fw-bold">
                     {{userEmail}}
                 </span>
             </div>
-            <aw2-button
-                id="logout-btn"
-                text="Log out"
-                class="aw-2-mb--xl aw-2-d--inline-block"
-                color="blue"
-                (click)="handleLogout()"
-            >
+            <aw2-button id="logout-btn" text="Log out" class="aw-2-mb--xl aw-2-d--inline-block" color="blue"
+                (click)="handleLogout()">
             </aw2-button>
         </div>
         <div class="aw-2-pt--xxxxl aw-2-flx aw-2-flx--column aw-2-flx--center">
