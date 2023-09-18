@@ -23,7 +23,7 @@ import { CommonService } from 'src/app/services/common.service';
 
 
 export class TimerComponent implements OnInit {
-    @Output() handelLogout = new EventEmitter();
+    @Output() handleLogout = new EventEmitter();
 
     public list: IList = enumList;
     public timeEntries: ITimeEntry[] = [];
@@ -54,7 +54,7 @@ export class TimerComponent implements OnInit {
 
                 }, (error) => {
                     if (error.status === 401) {
-                        this.handelLogout.emit(true);
+                        this.handleLogout.emit(true);
                         this.chromeService.setStorageData({ token: "" });
                     } else { }
                 }
@@ -90,7 +90,7 @@ export class TimerComponent implements OnInit {
 
         }, (error) => {
             if (error.status === 401) {
-                this.handelLogout.emit(true);
+                this.handleLogout.emit(true);
                 this.chromeService.setStorageData({ token: "" });
             } else { }
         }
@@ -121,7 +121,7 @@ export class TimerComponent implements OnInit {
 
         }, (error) => {
             if (error.status === 401) {
-                this.handelLogout.emit(true);
+                this.handleLogout.emit(true);
                 this.chromeService.setStorageData({ token: "" });
             } else { }
         }
@@ -144,7 +144,7 @@ export class TimerComponent implements OnInit {
             this.changeDetectorRef.detectChanges()
         }, (error) => {
             if (error.status === 401) {
-                this.handelLogout.emit(true);
+                this.handleLogout.emit(true);
                 this.chromeService.setStorageData({ token: "" });
             } else { }
         }
@@ -169,7 +169,7 @@ export class TimerComponent implements OnInit {
             },
                 (error) => {
                     if (error.status === 401) {
-                        this.handelLogout.emit(true);
+                        this.handleLogout.emit(true);
                         this.chromeService.setStorageData({ token: "" });
                     } else { }
                 }
@@ -190,7 +190,7 @@ export class TimerComponent implements OnInit {
             this.changeDetectorRef.detectChanges()
         }, (error) => {
             if (error.status === 401) {
-                this.handelLogout.emit(true);
+                this.handleLogout.emit(true);
                 this.chromeService.setStorageData({ token: " " });
             } else { }
         }

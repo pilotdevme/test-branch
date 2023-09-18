@@ -24,7 +24,7 @@ export class OptionsComponent implements OnInit {
     constructor(private chromeService: ChromeStorageService, private apiService: ApiService, private changeDetectorRef: ChangeDetectorRef) { }
 
     /*get selected checkbox value*/
-    async checkboxChange(event: Event, site: string) {
+    checkboxChange(event: Event, site: string) {
         const siteCheck = (event as CustomEvent).detail;
         this.selectedSites[site] = siteCheck
         this.chromeService.setStorageData({ allowedSites: this.selectedSites });

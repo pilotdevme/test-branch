@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, Input, Output, EventEmitter, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 @Component({
     standalone: true,
     selector: 'popup-login',
@@ -6,15 +6,11 @@ import { Component, OnInit, Input, Output, EventEmitter, CUSTOM_ELEMENTS_SCHEMA 
     styleUrls: ['./auth.component.scss'],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
     @Input() login: boolean = false;
     @Output() toggleLogin = new EventEmitter();
     @Output() toggleSignup = new EventEmitter();
-   
 
-    /* get data on mounted */
-    ngOnInit(): void {}
-    
     /* login button click handler */
     handleLogin() {
         this.toggleLogin.emit(true)

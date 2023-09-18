@@ -55,7 +55,7 @@ export class PopupComponent implements AfterViewInit {
     }
 
     /* signUp button click listener */
-    handelLogout(value: boolean | string) {
+    handleLogout(value: boolean | string) {
         //temporarily just logging in.
         this.isLoggedIn = false;
         this.changeDetectorRef.detectChanges()
