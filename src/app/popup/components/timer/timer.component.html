@@ -2,15 +2,15 @@
     <!-- Timer details -->
     <div class="aw-2-pos--relative aw-2-w-100 aw-2-py--xxl aw-2-px--l">
         <div class="aw-2-flx aw-2-flx--center aw-2-flx--content-between aw-2-mb--xl">
-            <a href="#" class="aw-2-d--block"><img src="/assets/images/logo.svg" alt="hand-surf image" /></a>
+            <a href="#" class="aw-2-d--block"><img src="/assets/images/logo.svg" alt="logo" /></a>
             <div class="">
-                <i class="aw-2-icn">settings</i>
-                <a href="#" class=" aw-2-ml--l"><i class="aw-2-icn">open_in_new</i></a>
+                <a href="#" (click)="openDashboard()" class=" aw-2-mr--l"><i class="aw-2-icn">open_in_new</i></a>
+                <a href='#' (click)="openSettings()"><i class="aw-2-icn">settings</i></a>
             </div>
         </div>
 
         <!-- current time input feild -->
-        <div class="currentTime m-0">
+        <div class="aw-2-mb">
             <aw2-text-field label="Current time" placeholder="Add note..."
                 (change)="noteChange($event)"></aw2-text-field>
         </div>
@@ -18,26 +18,34 @@
         <!-- dropdown buttons for project, task and work -->
 
         <div class="aw-2-flx">
-            <aw2-dropdown-field id="projectsDropdown" class="aw-2-drop--custom" label="Projects"></aw2-dropdown-field>
-            <aw2-dropdown-field id="tasksDropdown" class="aw-2-drop--custom aw-2-ml--s"
+            <aw2-dropdown-field id="projectsDropdown" (changed)="projectChange($event)" class="aw-2-drop--custom"
+                label="Projects"></aw2-dropdown-field>
+            <aw2-dropdown-field id="tasksDropdown" class="aw-2-drop--custom aw-2-ml--s" (changed)="taskChange($event)"
                 label="Tasks"></aw2-dropdown-field>
             <aw2-dropdown-field id="workTypeDropdown" class="aw-2-drop--custom aw-2-ml--s"
-                label="Dropdown"></aw2-dropdown-field>
-            <button
+                (changed)="typeOfWorkChange($event)" label="Type of work"></aw2-dropdown-field>
+            <button *ngIf="!selectedValues.isBillable else billabletemplate"
+                class="aw-2-project_btns aw-2-flx aw-2-flx--center aw-2-b-0 aw-2-b--radius-m aw-2-p--s aw-2-ml--s aw-2-txt--bold aw-2-txt--m aw-2-bill-color">
+                $ <span class="aw-2-ml--s">Not Billable</span>
+            </button>
+            <ng-template #billabletemplate>
+                <button
                 class="aw-2-project_btns aw-2-flx aw-2-flx--center aw-2-b-0 aw-2-b--radius-m aw-2-p--s aw-2-ml--s aw-2-txt--bold aw-2-txt--m aw-2-bill-color">
                 $ <span class="aw-2-ml--s">Billable</span>
             </button>
+            </ng-template>
+       
         </div>
 
         <!-- start or stop time interval -->
 
-        <div class="mt-3">
+        <div class="aw-2-mt">
             <!-- stop interval -->
             <div *ngIf="timerRunning else timerButton">
                 <button (click)="stopTimer();"
                     class="aw-2-d--block aw-2-w--full aw-2-p--l aw-2-b--radius-l aw-2-b-0 aw-2-btn">
                     <div class="aw-2-flx aw-2-flx--center aw-2-txt--center aw-2-w--full aw-2-flx--content-center ">
-                        <img src="/assets/images/stop.svg" />
+                        <img src="/assets/images/stop.svg" alt="stop" />
                         <span class="aw-2-txt--bold aw-2-txt--m">
                             {{ timer }}
                         </span>
@@ -62,19 +70,19 @@
     </div>
 
     <!-- tabel for project entries -->
-    <div class="aw-2--table aw-2-px--l aw-2-mb--l">
-        <h3 class="aw-2-txt--bold aw-2-txt--m aw-2--head-color aw-2-mb--l">Recently tracked</h3>
+    <div class="aw-2--table aw-2-px--l">
+        <h3 class="aw-2-txt--bold aw-2-txt--m aw-2--head-color">Recently tracked</h3>
         <table class="aw-2-tbl aw-2-p--l">
             <tbody *ngIf="timeEntries.length != 0" class="aw-2-tbl-content-list">
-                <tr *ngFor="let timeEntry of timeEntries" class="timeentry-row">
+                <tr *ngFor="let timeEntry of timeEntries" class="aw-2-table-row">
                     <td class="aw-2-w--full aw-2-py--m">
                         <div class="aw-2-flx aw-2-flx--center aw-2-txt--truncate">
-                            <img src="/assets/images/briefcase.svg" />
+                            <img src="/assets/images/briefcase.svg" alt="briefcase" />
                             <div class="aw-2-ml--m w-2-txt--truncate aw-2-w--full aw-2-project--content">
                                 <div class="aw-2-flx aw-2-flx--center">
                                     <div class="aw-2-flx aw-2-flx--centeraw-2-mr--s aw-2-flx-size aw-2-txt--truncate"
                                         *ngIf="timeEntry?.project">
-                                        <img src="/assets/images/bell.svg" />
+                                        <img src="/assets/images/bell.svg" alt="bell" />
                                         <span class="aw-2-txt--bold aw-2-txt--m aw-2-txt--truncate">
                                             {{timeEntry?.project?.name}}
                                         </span>
@@ -82,7 +90,7 @@
                                     <div class="aw-2-flx aw-2-flx--center aw-2-flx-size aw-2-txt--truncate"
                                         *ngIf="timeEntry?.task">
                                         <i class="aw-2-icn">arrow_right</i>
-                                        <span class="aw-2-txt--bold aw-2-txt--m aw-2-txt--truncate">
+                                        <span class="aw-2-txt--bold aw-2-txt--m aw-2-txt--truncate aw-2-task-text-width">
                                             {{timeEntry?.task?.name}}
                                         </span>
                                     </div>
@@ -113,8 +121,8 @@
                 </tr>
             </tbody>
             <tbody *ngIf="timeEntries.length == 0">
-                <tr>
-                    <td class="text-center">No Data Found.</td>
+                <tr class="aw-2-table-row">
+                    <td class="text-center">No Data Found</td>
                 </tr>
             </tbody>
         </table>

@@ -33,4 +33,13 @@ export class ChromeStorageService {
             });
         });
     }
+
+    /* chrome storage data */
+    resetOnStopTimer() {
+        this.setStorageData({ running_time: false });
+        this.setStorageData({ timer_start_time: '' });
+        this.setStorageData({ select_workType_value: '' });
+        this.setStorageData({ select_project_value: '' });
+        this.setStorageData({ select_task_value: '' });
+    }
 }

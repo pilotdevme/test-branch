@@ -4,8 +4,8 @@ import { LoginComponent } from './components/auth/auth.component';
 import { TimerComponent } from './components/timer/timer.component';
 import { NgIf, NgTemplateOutlet } from '@angular/common';
 import { ChromeStorageService } from '../services/chromeService.service';
-import { PopupService } from '../services/popup.service';
-import { IGetToken } from './components/timer/timer.interface';
+import { ApiService } from '../services/api.service';
+import { IGetToken } from '../common/common.interface';
 
 @Component({
     standalone: true,
@@ -13,77 +13,82 @@ import { IGetToken } from './components/timer/timer.interface';
     templateUrl: './popup.component.html',
     styleUrls: ['./popup.component.scss'],
     imports: [LoginComponent, TimerComponent, NgIf, NgTemplateOutlet],
-    providers: [PopupService],
+    providers: [ApiService],
 })
 export class PopupComponent implements AfterViewInit {
     public isLoggedIn: boolean = false;
+    public isLoading: boolean = true;
+    private redirectUri = '';
 
-    constructor(private popupService: PopupService, private chrome_service: ChromeStorageService, private changeDetectorRef: ChangeDetectorRef) { }
-
+    constructor(private apiService: ApiService, private chromeService: ChromeStorageService, private changeDetectorRef: ChangeDetectorRef) { }
     /* login button click listener */
-    toggleLogin(value: boolean | string) {
+    toggleLogin() {
+        //open awork login page
+        chrome.runtime.sendMessage({ action: 'login-init' })
+    }
 
-        //open awork login page in new tab
-        const redirectUri = chrome.identity.getRedirectURL();
+    fetchAccessToken(authorizationCode: string) {
+        const body = {
+            "grant_type": 'authorization_code',
+            "code": authorizationCode,
+            "client_id": `${environment.awork.clientId}`,
+            "redirect_uri": `${this.redirectUri}`
+        };
 
-        //redirect url
-        const auth_url = `${environment.awork.url}/accounts/authorize?client_id=${environment.awork.clientId}&redirect_uri=${redirectUri}&scope=${environment.awork.scope}&response_type=code&grant_type=authorization_code`;
-
-        chrome.identity.launchWebAuthFlow({ url: auth_url, interactive: true }, (redirect_Url) => {
-
-            if (chrome.runtime.lastError || !redirect_Url) {
-                console.error('Authorization failed:', chrome.runtime.lastError);
-                return;
-            } else if (!redirect_Url) {
-                return console.error('Authorization failed: Redirect URL is empty');
+        this.apiService.getToken(body).subscribe((response: IGetToken) => {
+            if (response.access_token) {
+                this.isLoggedIn = true;
+                this.isLoading = false;
+                this.chromeService.setStorageData({ token: `${response.access_token}` })
+                this.chromeService.setStorageData({ authorizationCode: '' })
+                this.changeDetectorRef.detectChanges()
             }
-
-            //get authroization code from redirect url
-            const url = new URL(redirect_Url);
-            const authorizationCode = url.searchParams.get('code');
-
-            if (authorizationCode) {
-                //access token api 
-                const body = {
-                    "grant_type": 'authorization_code',
-                    "code": authorizationCode,
-                    "client_id": `${environment.awork.clientId}`,
-                    "redirect_uri": `${redirectUri}`
-                };
-
-                this.popupService.getToken(body).subscribe((response: IGetToken) => {
-                    if (response.access_token) {
-                        this.isLoggedIn = true
-                        this.chrome_service.setStorageData({ token: `${response.access_token}` })
-                        this.changeDetectorRef.detectChanges()
-                        // this.popupService.setHeader({ token: response.access_token })
-                    }
-                });
-            }
+        }, (error) => {
+            this.isLoading = false;
         });
-
-        // chrome.tabs.create({ url: auth_url })
-        // save token in extension local storage
-        // this.chrome_service.setStorageData({ token: `${environment.awork.token}` })
-        // this.isLoggedIn = true;
     }
 
     /* signUp button click listener */
     toggleSignup(value: boolean | string) {
         //temporarily just logging in.
-        this.isLoggedIn = true
+        // this.isLoggedIn = true
+    }
+
+    /* signUp button click listener */
+    handleLogout(value: boolean | string) {
+        //temporarily just logging in.
+        this.isLoggedIn = false;
+        this.changeDetectorRef.detectChanges()
     }
 
     ngAfterViewInit(): void {
-        this.fetchToken()
+        this.redirectUri = chrome.identity.getRedirectURL();
+        this.fetchToken();
+        this.chromeListener();
     }
 
     /* fetch token from local storage  */
     async fetchToken() {
-        const data: { token: string } = await this.chrome_service.getStorageData();
-
+        const data: { token: string, authorizationCode: string } = await this.chromeService.getStorageData();
         if (data?.token) {
-            this.isLoggedIn = true
+            this.isLoggedIn = true;
+            this.isLoading = false;
         }
+        else if (data?.authorizationCode) {
+            this.fetchAccessToken(data?.authorizationCode)
+        }
+        else {
+            this.isLoading = false;
+        }
+    }
+
+    chromeListener(){
+        chrome.runtime.onMessage.addListener((request, sender, senderResponse) => {
+            switch (request.action) {
+                case 'loggedIn': {
+                    this.fetchToken()
+                }
+            }
+        })
     }
 }

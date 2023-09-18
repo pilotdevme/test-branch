@@ -1,0 +1,22 @@
+<div>
+    <!-- start or stop time interval -->
+    <!-- stop interval -->
+    <div *ngIf="timerRunning === true">
+        <button
+            (click)="stopTimer();"
+            class="aw-2-b-0 aw-2-btn aw-2-start-stop--btn aw-2-w--100 aw-2-h--39"
+        >
+            <img src="/assets/images/stop.svg" alt="stop" />
+            {{ timer }}</button>
+    </div>
+
+    <!-- start interval -->
+    <div *ngIf="timerRunning === false">
+        <button
+            class="aw-2-b-0 aw-2-btn aw-2-start-stop--btn aw-2-w--100 aw-2-h--39"
+            (click)="startTimer()"
+        >
+            <i class="aw-2-icn">play_arrow</i>
+            Start Timer</button>
+    </div>
+</div>
