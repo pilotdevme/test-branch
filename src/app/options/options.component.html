@@ -2,9 +2,9 @@
     <a href="#" class="aw-2-d--block aw-2-mb-84"><img src="/assets/images/logo.svg" alt="logo" /></a>
     <div>
         <div class="aw-2-mb--xl">
-            <span class="aw-2-option-heading">Layout box title </span>
+            <span class="aw-2-option-heading">{{ 'option.site_heading' | translate}}</span>
             <span class="aw-2-option-subheading ">
-                Activate sites where you want to see the awork timer
+                {{ 'option.site_subheading' | translate}}
             </span>
         </div>
         <div class="aw-2-options-border">
@@ -31,24 +31,27 @@
         </div>
 
         <div class=" aw-2-mt--xxxxl aw-2-mb--l">
-            <span class="aw-2-option-heading">Layout box title </span>
+            <span class="aw-2-option-heading">{{ 'option.project_heading' | translate}} </span>
         </div>
         <!-- project list dropdown -->
         <div class="aw-2-flx aw-2-flx--content-between aw-2-flx--center aw-2-options-border">
-            <div class="aw-2-icn--slate aw-2-txt--body-regular aw-2-txt--bold">Default project, which should be selected
-                when starting timer</div>
-            <div><aw2-dropdown-field id="optionsProjectsDropdown" class="aw-2-option-search-width" label=""
-                    (changed)="projectChange($event)"></aw2-dropdown-field></div>
+            <div class="aw-2-icn--slate aw-2-txt--body-regular aw-2-txt--bold">
+                {{ 'option.project_subheading' | translate}}
+            </div>
+            <div>
+                <aw2-dropdown-field id="optionsProjectsDropdown" class="aw-2-option-search-width" label=""
+                    (changed)="projectChange($event)"></aw2-dropdown-field>
+            </div>
         </div>
 
         <div class=" aw-2-mt--xxxxl aw-2-mb--l">
-            <span class="aw-2-option-heading">Layout box title </span>
+            <span class="aw-2-option-heading">{{ 'option.auth_heading' | translate}} </span>
         </div>
         <!-- loggedIn user & logput button -->
         <div class="aw-2-flx aw-2-flx--content-between aw-2-flx--center aw-2-mb--xxxxl aw-2-options-border"
             *ngIf="isLoggedIn">
             <div class="aw-2-icn--slate aw-2-txt--body-regular">
-                <span class=" aw-2-txt--bold">You are logged as:</span>
+                <span class=" aw-2-txt--bold">{{ 'option.auth_subheading' | translate}}:</span>
                 <span class="aw-2-txt--midnight aw-2-fw-bold">
                     {{userEmail}}
                 </span>

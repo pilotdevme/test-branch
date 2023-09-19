@@ -10,7 +10,7 @@ import { ISelectedValues, IList, ITime, ITimeDifference, ITimeEntry, ILocalData,
 import { enumChangeList, enumList, enumTime, enumTimeDifference, initialTimerValue } from '../../../common/common.enum';
 import { ChromeStorageService } from 'src/app/services/chromeService.service';
 import { CommonService } from 'src/app/services/common.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
     standalone: true,
@@ -42,7 +42,12 @@ export class TimerComponent implements OnInit {
     constructor(private apiService: ApiService,
         private chromeService: ChromeStorageService,
         private changeDetectorRef: ChangeDetectorRef,
-        private commonService: CommonService) { }
+        private commonService: CommonService,
+        private translate: TranslateService
+    ) {
+        translate.setDefaultLang('en');
+        translate.use('en');
+    }
 
     /* get project details and timer */
     getTimers() {

@@ -16,5 +16,13 @@
         "type_of_work": "Type of work",
         "tracking": "tracking...",
         "no_data_found": "No data found"
+    },
+    "option": {
+        "site_heading": "Layout box title",
+        "site_subheading": "Activate sites where you want to see the awork timer",
+        "project_heading": "Layout box title",
+        "project_subheading": "Default project, which should be selected when starting timer",
+        "auth_heading": "Layout box title",
+        "auth_subheading": "You are logged as"
     }
 }
