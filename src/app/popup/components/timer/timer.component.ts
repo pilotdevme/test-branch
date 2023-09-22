@@ -10,6 +10,7 @@ import { ISelectedValues, IList, ITime, ITimeDifference, ITimeEntry, ILocalData,
 import { enumChangeList, enumList, enumTime, enumTimeDifference, initialTimerValue } from '../../../common/common.enum';
 import { ChromeStorageService } from 'src/app/services/chromeService.service';
 import { CommonService } from 'src/app/services/common.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
     standalone: true,
@@ -17,7 +18,7 @@ import { CommonService } from 'src/app/services/common.service';
     templateUrl: './timer.component.html',
     styleUrls: ['./timer.component.scss'],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [NgFor, NgIf, HttpClientModule, MatProgressBarModule, FormsModule, NgTemplateOutlet],
+    imports: [NgFor, NgIf, HttpClientModule, MatProgressBarModule, FormsModule, NgTemplateOutlet, TranslateModule],
     providers: [ApiService],
 })
 
@@ -41,7 +42,12 @@ export class TimerComponent implements OnInit {
     constructor(private apiService: ApiService,
         private chromeService: ChromeStorageService,
         private changeDetectorRef: ChangeDetectorRef,
-        private commonService: CommonService) { }
+        private commonService: CommonService,
+        private translate: TranslateService
+    ) {
+        translate.setDefaultLang('en');
+        translate.use('en');
+    }
 
     /* get project details and timer */
     getTimers() {
@@ -364,8 +370,8 @@ export class TimerComponent implements OnInit {
         }
     }
 
-    openDashboard(){
-        chrome.tabs.create({url: 'https://awork.com'});
+    openDashboard() {
+        chrome.tabs.create({ url: 'https://awork.com' });
     }
 
     listenEvents() {

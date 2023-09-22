@@ -1,25 +1,15 @@
 <div class="aw-2-pos--relative aw-2-w-100 aw-2-py--xxl">
     <div class="aw-2-px--l aw-2-py--xxl aw-2-txt--center">
         <a href="#" class="aw-2-d--block aw-2-mb--xl"><img src="/assets/images/logo_big.svg" alt="logo" /></a>
-        <p class="aw-2-logo">Timer Tracking Extension</p>
+        <p class="aw-2-logo">{{'auth.heading' | translate}}</p>
     </div>
     <img src="/assets/images/hand-surf.svg" class="aw-2-d--block aw-2-my--xl" alt="hand-surf image" />
     <div class="aw-2-txt--center aw-2-flx--column aw-2-flx aw-2-flx--center aw-2-btns">
         <!-- login button -->
-        <aw2-button
-                id="login-btn"
-                text="Log in"
-                class="aw-2-mb--xl aw-2-d--inline-block"
-                color="blue"
-                (click)="handleLogin()"
-            ></aw2-button>
-         <!-- sign-up button -->
-         <aw2-button
-                id="login-btn"
-                text="Sign up"
-                color="blue"
-                class="aw-2-d--inline-block aw-2-mb--xl"
-                (click)="handleSignup()"
-     ></aw2-button>
+        <aw2-button id="login-btn" text="{{ 'auth.login' | translate }}" class="aw-2-mb--xl aw-2-d--inline-block" color="blue"
+            (click)="handleLogin()"></aw2-button>
+        <!-- sign-up button -->
+        <aw2-button id="login-btn" text="{{ 'auth.signup' | translate }}" color="blue" class="aw-2-d--inline-block aw-2-mb--xl"
+            (click)="handleSignup()"></aw2-button>
     </div>
 </div>

@@ -5,6 +5,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { ISiteObject, IList, IProject, IUserContactInfo } from '../common/common.interface';
 import { enumList } from '../common/common.enum';
 import { NgIf } from '@angular/common';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+
 @Component({
     standalone: true,
     selector: 'app-options',
@@ -12,7 +14,7 @@ import { NgIf } from '@angular/common';
     styleUrls: ['./options.component.scss'],
     providers: [ApiService],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [HttpClientModule, NgIf],
+    imports: [HttpClientModule, NgIf, TranslateModule],
 })
 export class OptionsComponent implements OnInit {
 
@@ -21,7 +23,15 @@ export class OptionsComponent implements OnInit {
     public isLoggedIn: boolean = false;
     public userEmail: string = ''
 
-    constructor(private chromeService: ChromeStorageService, private apiService: ApiService, private changeDetectorRef: ChangeDetectorRef) { }
+    constructor(
+        private chromeService: ChromeStorageService,
+        private apiService: ApiService,
+        private changeDetectorRef: ChangeDetectorRef,
+        private translate: TranslateService
+    ) {
+        this.translate.setDefaultLang('en');
+        this.translate.use('en');
+    }
 
     /*get selected checkbox value*/
     checkboxChange(event: Event, site: string) {

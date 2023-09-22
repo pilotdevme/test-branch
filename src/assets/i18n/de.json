@@ -1,0 +1,28 @@
+{
+    "auth": {
+        "heading": "Timer Tracking Extension",
+        "login": "Log in",
+        "signup": "Sign up"
+    },
+    "timer": {
+        "current_time": "Aktuelle Uhrzeit",
+        "add_note": "Notiz hinzufügen",
+        "billable": "Abrechnungsfähig",
+        "not_billable": "Nicht abrechenbar",
+        "recently_tracked": "Kürzlich verfolgt",
+        "start_timer": "Timer starten",
+        "projects": "Projekte",
+        "tasks": "Aufgaben",
+        "type_of_work": "Art von Arbeit",
+        "tracking": "Verfolgung...",
+        "no_data_found": "Keine Daten gefunden"
+    },
+    "option": {
+        "site_heading": "Titel des Layoutfelds",
+        "site_subheading": "Aktiviere Seiten, auf denen du den awork-Timer sehen möchtest",
+        "project_heading": "Titel des Layoutfelds",
+        "project_subheading": "Standardprojekt, das beim Starten des Timers ausgewählt werden sollte",
+        "auth_heading": "Titel des Layoutfelds",
+        "auth_subheading": "Sie sind angemeldet als"
+    }
+}

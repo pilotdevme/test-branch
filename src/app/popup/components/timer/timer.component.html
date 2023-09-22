@@ -11,30 +11,31 @@
 
         <!-- current time input feild -->
         <div class="aw-2-mb">
-            <aw2-text-field label="Current time" placeholder="Add note..."
-                (change)="noteChange($event)"></aw2-text-field>
+            <aw2-text-field label="{{ 'timer.current_time' | translate }}"
+                placeholder="{{ 'timer.add_note' | translate }}..." (change)="noteChange($event)"></aw2-text-field>
         </div>
 
         <!-- dropdown buttons for project, task and work -->
 
         <div class="aw-2-flx">
             <aw2-dropdown-field id="projectsDropdown" (changed)="projectChange($event)" class="aw-2-drop--custom"
-                label="Projects"></aw2-dropdown-field>
+                label="{{ 'timer.projects' | translate }}"></aw2-dropdown-field>
             <aw2-dropdown-field id="tasksDropdown" class="aw-2-drop--custom aw-2-ml--s" (changed)="taskChange($event)"
-                label="Tasks"></aw2-dropdown-field>
+                label="{{ 'timer.tasks' | translate }}"></aw2-dropdown-field>
             <aw2-dropdown-field id="workTypeDropdown" class="aw-2-drop--custom aw-2-ml--s"
-                (changed)="typeOfWorkChange($event)" label="Type of work"></aw2-dropdown-field>
+                (changed)="typeOfWorkChange($event)"
+                label="{{ 'timer.type_of_work' | translate }}"></aw2-dropdown-field>
             <button *ngIf="!selectedValues.isBillable else billabletemplate"
                 class="aw-2-project_btns aw-2-flx aw-2-flx--center aw-2-b-0 aw-2-b--radius-m aw-2-p--s aw-2-ml--s aw-2-txt--bold aw-2-txt--m aw-2-bill-color">
-                $ <span class="aw-2-ml--s">Not Billable</span>
+                $ <span class="aw-2-ml--s">{{ 'timer.not_billable' | translate }}</span>
             </button>
             <ng-template #billabletemplate>
                 <button
-                class="aw-2-project_btns aw-2-flx aw-2-flx--center aw-2-b-0 aw-2-b--radius-m aw-2-p--s aw-2-ml--s aw-2-txt--bold aw-2-txt--m aw-2-bill-color">
-                $ <span class="aw-2-ml--s">Billable</span>
-            </button>
+                    class="aw-2-project_btns aw-2-flx aw-2-flx--center aw-2-b-0 aw-2-b--radius-m aw-2-p--s aw-2-ml--s aw-2-txt--bold aw-2-txt--m aw-2-bill-color">
+                    $ <span class="aw-2-ml--s">{{ 'timer.billable' | translate }}</span>
+                </button>
             </ng-template>
-       
+
         </div>
 
         <!-- start or stop time interval -->
@@ -61,7 +62,7 @@
                     <div class="aw-2-flx aw-2-flx--center aw-2-txt--center aw-2-w--full aw-2-flx--content-center ">
                         <i class="aw-2-icn">play_arrow</i>
                         <span class="aw-2-txt--bold aw-2-txt--m ">
-                            Start Timer
+                            {{ 'timer.start_timer' | translate }}
                         </span>
                     </div>
                 </button>
@@ -71,7 +72,7 @@
 
     <!-- tabel for project entries -->
     <div class="aw-2--table aw-2-px--l">
-        <h3 class="aw-2-txt--bold aw-2-txt--m aw-2--head-color">Recently tracked</h3>
+        <h3 class="aw-2-txt--bold aw-2-txt--m aw-2--head-color">{{ 'timer.recently_tracked' | translate }}</h3>
         <table class="aw-2-tbl aw-2-p--l">
             <tbody *ngIf="timeEntries.length != 0" class="aw-2-tbl-content-list">
                 <tr *ngFor="let timeEntry of timeEntries" class="aw-2-table-row">
@@ -90,7 +91,8 @@
                                     <div class="aw-2-flx aw-2-flx--center aw-2-flx-size aw-2-txt--truncate"
                                         *ngIf="timeEntry?.task">
                                         <i class="aw-2-icn">arrow_right</i>
-                                        <span class="aw-2-txt--bold aw-2-txt--m aw-2-txt--truncate aw-2-task-text-width">
+                                        <span
+                                            class="aw-2-txt--bold aw-2-txt--m aw-2-txt--truncate aw-2-task-text-width">
                                             {{timeEntry?.task?.name}}
                                         </span>
                                     </div>
@@ -115,14 +117,14 @@
                                 value={{timeEntry?.duration}}></mat-progress-bar>
                         </div>
                         <ng-template #timerNotEnded>
-                            Timer is being tracked
+                            {{ 'timer.tracking' | translate }}
                         </ng-template>
                     </td>
                 </tr>
             </tbody>
             <tbody *ngIf="timeEntries.length == 0">
                 <tr class="aw-2-table-row">
-                    <td class="text-center">No Data Found</td>
+                    <td class="text-center">{{ 'timer.no_data_found' | translate }}</td>
                 </tr>
             </tbody>
         </table>
