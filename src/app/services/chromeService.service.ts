@@ -34,12 +34,26 @@ export class ChromeStorageService {
         });
     }
 
-    /* chrome storage data */
+    /* chrome storage data reset timer stored boolean or timer start time */
     resetOnStopTimer() {
         this.setStorageData({ running_time: false });
         this.setStorageData({ timer_start_time: '' });
-        this.setStorageData({ select_workType_value: '' });
-        this.setStorageData({ select_project_value: '' });
-        this.setStorageData({ select_task_value: '' });
+    }
+
+    /* chrome storage data reset projects, tasks and work type values and token as well on logout */
+    resetOnLogout() {
+        this.setStorageData({ defaultProject: '' });
+        this.setStorageData({ authorizationCode: '' });
+        this.setStorageData({ token: '' });
+        this.setStorageData({ note: '' });
+        this.setStorageData({ projectStatus: '' });
+        this.setStorageData({
+            selectedValues: {
+                project: '',
+                task: '',
+                typeOfWork: '',
+                isBillable: false
+            }
+        });
     }
 }

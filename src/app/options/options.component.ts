@@ -1,12 +1,11 @@
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { NgIf } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { ChromeStorageService } from '../services/chromeService.service';
 import { ApiService } from '../services/api.service';
-import { HttpClientModule } from '@angular/common/http';
-import { ISiteObject, IList, IProject, IUserContactInfo } from '../common/common.interface';
-import { enumList } from '../common/common.enum';
-import { NgIf } from '@angular/common';
+import { ISiteObject, IList, IProject, IUserContactInfo, ITimeTrackingSetting } from '../common/common.interface';
+import { enumList, enumTimeTrackingSetting } from '../common/common.enum';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-
 @Component({
     standalone: true,
     selector: 'app-options',
@@ -22,6 +21,8 @@ export class OptionsComponent implements OnInit {
     public list: IList = enumList;
     public isLoggedIn: boolean = false;
     public userEmail: string = ''
+    public projectValue: string = '';   
+    private timeTrackingSetting : ITimeTrackingSetting = enumTimeTrackingSetting;
 
     constructor(
         private chromeService: ChromeStorageService,
@@ -57,11 +58,11 @@ export class OptionsComponent implements OnInit {
         this.apiService.getProjects().subscribe((response: IProject[]) => {
             this.list.projects = response;
             const dropdownOptions = this.list.projects.map(project => ({ value: project.id, label: project.name, icon: "bell" }))
-
             // cannot use Element, HTMLElement, HTMLSelectElement because options is undefined or read-only for the types
             const dropdown: any = document.querySelector('#optionsProjectsDropdown')
             if (dropdown) {
                 dropdown.options = dropdownOptions
+                dropdown.value = this.projectValue
             }
             this.changeDetectorRef.detectChanges()
         }, (error) => {
@@ -88,7 +89,8 @@ export class OptionsComponent implements OnInit {
 
     /*logout*/
     logout() {
-        this.chromeService.setStorageData({ token: "" })
+        this.chromeService.resetOnLogout()
+        this.chromeService.resetOnStopTimer();
         chrome.runtime.sendMessage({ action: 'loggedOut' });
         this.isLoggedIn = false;
     }
@@ -105,7 +107,7 @@ export class OptionsComponent implements OnInit {
         }
         );
     }
-
+    
     ngOnInit(): void {
         this.getInitialData();
     }
@@ -113,6 +115,8 @@ export class OptionsComponent implements OnInit {
     /*get storage data*/
     async getInitialData() {
         const data = await this.chromeService.getStorageData();
+        this.projectValue = data?.defaultProject ?? ''
+        
         if (data?.token) {
             this.isLoggedIn = true;
         }
@@ -124,7 +128,7 @@ export class OptionsComponent implements OnInit {
 
     /* set the default project on change event */
     projectChange(event: Event) {
-        const selectedProject = (event as CustomEvent).detail?.value;
-        this.chromeService.setStorageData({ 'defaultProject': selectedProject })
+        this.projectValue = (event as CustomEvent).detail?.value;
+        this.chromeService.setStorageData({ 'defaultProject': this.projectValue })
     }
 }

@@ -11,13 +11,12 @@ export class ApiService {
     public header: HttpHeaders = new HttpHeaders({});
     public token: string = "";
 
-
     /* get token and set http header */
     constructor(
         private http: HttpClient,
-        private chrome_service: ChromeStorageService
+        private chromeService: ChromeStorageService
     ) {
-        this.chrome_service.getStorageData().then(data => {
+        this.chromeService.getStorageData().then(data => {
             this.token = data.token
             this.header = new HttpHeaders({
                 "Authorization": `Bearer ${data.token}`
@@ -27,7 +26,7 @@ export class ApiService {
 
     /* get projects lists and time entries */
     public getTimeEntries() {
-        return this.http.get<ITimeEntry[]>(`${environment.awork.url}/timeentries?pageSize=4`, { headers: this.header })
+        return this.http.get<ITimeEntry[]>(`${environment.awork.url}/timeentries`, { headers: this.header })
     }
 
     /* create time entry */

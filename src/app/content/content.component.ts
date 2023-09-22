@@ -3,11 +3,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { ApiService } from '../services/api.service';
 import { interval, Subscription } from 'rxjs';
 import { ChromeStorageService } from '../services/chromeService.service';
-import { NgIf } from '@angular/common';
-import { initialTimerValue, enumTimeDifference, enumTime } from '../common/common.enum';
-import { ITimeEntry, ITimeDifference, ILocalData, ITime, IWorkType } from '../common/common.interface';
 import { CommonService } from '../services/common.service';
-import { IUserContactInfo } from '../common/common.interface';
+import { NgIf } from '@angular/common';
+import { initialTimerValue, enumTimeDifference, enumTime, enumChangeList, enumTimeTrackingSetting } from '../common/common.enum';
+import { ITimeEntry, ITimeDifference, ILocalData, ITime, IWorkType, IUserContactInfo, ISelectedValues, IStartTimeBody, ITimeTrackingSetting } from '../common/common.interface';
 
 /*
  * 'ViewEncapsulation.None' is used to set page body margins to 0 for this component.
@@ -25,13 +24,14 @@ import { IUserContactInfo } from '../common/common.interface';
     providers: [ApiService],
 })
 export class ContentComponent implements OnInit {
-
     content: string = '';
     constructor(private apiService: ApiService,
-        private chromeService: ChromeStorageService,
-        private changeDetectorRef: ChangeDetectorRef,
-        private commonService: CommonService) { }
 
+    private chromeService: ChromeStorageService,
+    private changeDetectorRef: ChangeDetectorRef,
+    private commonService: CommonService) { }
+
+    public selectedValues: ISelectedValues = enumChangeList;
     public workTypes: IWorkType[] = [];
     public timer: string = initialTimerValue;
     public timeEntries: ITimeEntry[] = [];
@@ -40,7 +40,24 @@ export class ContentComponent implements OnInit {
     private getLocData: ILocalData = {};
     private time: ITime = enumTime;
     private intervalSubscription !: Subscription;
-
+    private calculatedData: number = 0;
+    private timeTrackingSetting : ITimeTrackingSetting = enumTimeTrackingSetting;
+    
+    /* get time entries */
+    getTimers() {
+        try {
+            this.apiService.getTimeEntries().subscribe((response: ITimeEntry[]) => {
+                this.timeEntries = response.slice(0, 4);
+                this.calculatedData = this.commonService.getCalculateTrackingTime(response);
+                this.changeDetectorRef.detectChanges(); // Manually trigger change detection
+            }, (error) => {
+                if (error.status === 401) {
+                    this.chromeService.setStorageData({ token: "" });
+                } else { }
+            });
+        }
+        catch (e) { }
+    }
 
     /* get work types */
     getWorkTypes() {
@@ -48,26 +65,46 @@ export class ContentComponent implements OnInit {
             this.workTypes = response;
         }, (error) => {
             if (error.status === 401) {
-                // Handle the 401 Unauthorized error here
-                console.error('Unauthorized. Redirecting to login page or showing an error message.');
                 this.chromeService.setStorageData({ token: "" })
                 window.location.reload();
-            } else {
-                // Handle other errors
-                console.error('An error occurred:', error);
+            } else { }
+        });
+    }
+
+     /* get time tracking setting */
+     getTimeTrackingSetting() {
+        this.apiService.timeTrackingSettings().subscribe((response: any) => { 
+        response.forEach((setting:any) => {
+            if(setting.type === "prevent-on-done-projects"){
+                this.timeTrackingSetting.preventDoneProjects = setting.enabled;
             }
-        }
-        );
+            if(setting.type === "time-tracking-limit"){
+                this.timeTrackingSetting.trackingLimit = setting.enabled;
+            }
+            if(setting.type === "prevent-private"){
+                this.timeTrackingSetting.preventPrivate = setting.enabled;
+            }
+        });
+        }, (error) => {
+            if (error.status === 401) {
+                this.chromeService.setStorageData({ token: "" });
+            } else { }
+        });
     }
 
     /* start time interval function */
     startTimer() {
         const [deafaultWorkType] = this.workTypes;
-        const body = {
-            "typeOfWorkId": deafaultWorkType.id ?? '',
+        const body: IStartTimeBody = {
+            "isBillable": this.selectedValues.isBillable,
+            "isBilled": false,
+            "typeOfWorkId": deafaultWorkType?.id ?? '',
             "timezone": Intl.DateTimeFormat().resolvedOptions().timeZone
         };
+        this.selectedValues.task && (body["taskId"] = this.selectedValues.task);
+        this.selectedValues.project && (body["projectId"] = this.selectedValues.project);
         this.apiService.startTimeEntry(body).subscribe((response: ITimeEntry) => {
+            
             this.timerRunning = true;
             this.chromeService.setStorageData({ running_time: this.timerRunning });
             this.chromeService.setStorageData({ timer_start_time: response?.startTimeLocal });
@@ -77,26 +114,23 @@ export class ContentComponent implements OnInit {
                     minutes: 0,
                     seconds: 0
                 };
-                /*using 1000 ms interval to increment time by 1 second*/
+                /* using 1000 ms interval to increment time by 1 second */
                 this.intervalSubscription = interval(1000).subscribe(() => this.updateTimer());
             }
         }, (error) => {
             if (error.status === 401) {
-                // Handle the 401 Unauthorized error here
-                console.error('Unauthorized. Redirecting to login page or showing an error message.');
                 this.chromeService.setStorageData({ token: "" });
                 window.location.reload();
-            } else {
-                // Handle other errors
-                console.error('An error occurred:', error);
-            }
-        }
-        );
-        this.changeDetectorRef.detectChanges(); // Manually trigger change detection
+            } else { }
+        }); 
+        this.changeDetectorRef.detectChanges(); // Manually trigger change detection 
         chrome.runtime.sendMessage({ action: 'timerStart' })
+        if(this.timeTrackingSetting.trackingLimit === true){
+            chrome.runtime.sendMessage({ action: 'time-tracking-limit', data: this.calculatedData })
+        }
     }
 
-    /*stop time interval function*/
+    /* stop time interval function */
     stopTimer() {
         this.apiService.endTimeEntry().subscribe(() => {
             this.timerRunning = false;
@@ -112,49 +146,36 @@ export class ContentComponent implements OnInit {
                 };
             }
             this.changeDetectorRef.detectChanges(); // Manually trigger change detection
+            this.getTimers()
             chrome.runtime.sendMessage({ action: 'timerStop' })
         }, (error) => {
             if (error.status === 401) {
-                // Handle the 401 Unauthorized error here
-                console.error('Unauthorized. Redirecting to login page or showing an error message.');
                 this.chromeService.setStorageData({ token: "" });
                 window.location.reload();
-            } else {
-                // Handle other errors
-                console.error('An error occurred:', error);
-            }
-        }
-        );
-    }
-
-    /* format time string value */
-    private formatTime(timeValue: number): string {
-        /* add zero as prefix if there single digit in time
-          example: converting '9' to '09'
-        */
-        return timeValue.toString().padStart(2, '0');
+            } else { }
+        });
     }
 
     /* calculate time difference between start running time interval to end running time interval */
     timeDifferenceInterval(startTimeIntervalValue: string, endTimeIntervalValue: string) {
 
-        /*Convert time values to Date objects */
-        const { start_loc_time, end_loc_time } = this.commonService.getdateValues(startTimeIntervalValue, endTimeIntervalValue)
+        /* Convert time values to Date objects */
+        const { start_loc_time, end_loc_time } = this.commonService.getDateValues(startTimeIntervalValue, endTimeIntervalValue)
         const timeDifference = Math.abs(start_loc_time - end_loc_time);
         this.timeDifference = this.commonService.calculateTimeDifference(timeDifference)
 
         this.changeDetectorRef.detectChanges(); // Manually trigger change detection
-        return `${this.timeDifference.hour}h${this.timeDifference.minute}m`
+        return `${this.timeDifference.hour}h${this.timeDifference.minute}`
     }
 
     /* get start time interval and current running time interval */
     getTrackingTime() {
         const currentDate = new Date();
 
-        /*Extract hours, minutes, seconds, and milliseconds*/
-        const hours = this.formatTime(currentDate.getHours());
-        const minutes = this.formatTime(currentDate.getMinutes());
-        const seconds = this.formatTime(currentDate.getSeconds());
+        /* Extract hours, minutes, seconds, and milliseconds */
+        const hours = this.commonService.formatTime(currentDate.getHours());
+        const minutes = this.commonService.formatTime(currentDate.getMinutes());
+        const seconds = this.commonService.formatTime(currentDate.getSeconds());
         const milliseconds = currentDate.getMilliseconds();
 
         const formattedDateTime = `${hours}:${minutes}:${seconds}.${milliseconds}`;
@@ -164,7 +185,7 @@ export class ContentComponent implements OnInit {
         return this.timeDifferenceInterval(timer_start_time, timer_end_time);
     }
 
-    /*timer counted function*/
+    /* timer counted function */
     private updateTimer(): void {
         this.time.seconds++;
         if (this.time.seconds >= 60) {
@@ -175,7 +196,7 @@ export class ContentComponent implements OnInit {
                 this.time.hours++;
             }
         }
-        this.timer = `${this.formatTime(this.time.hours)}:${this.formatTime(this.time.minutes)}:${this.formatTime(this.time.seconds)}`;
+        this.timer = `${this.commonService.formatTime(this.time.hours)}:${this.commonService.formatTime(this.time.minutes)}:${this.commonService.formatTime(this.time.seconds)}`;
         this.changeDetectorRef.detectChanges(); // Manually trigger change detection
     }
 
@@ -189,12 +210,12 @@ export class ContentComponent implements OnInit {
 
         /* set current timer running time hours, minutes and seconds and call time interval again according to current running time */
         if (this.getLocData?.timer_start_time) {
-            this.getTrackingTime()
+            this.getTrackingTime();
             if (this.timerRunning == true) {
                 this.time.hours = this.timeDifference.hour;
                 this.time.minutes = this.timeDifference.minute;
                 this.time.seconds = this.timeDifference.second;
-                /*using 1000 ms interval to increment time by 1 second*/
+                /* using 1000 ms interval to increment time by 1 second */
                 this.intervalSubscription = interval(1000).subscribe(() => this.updateTimer());
             }
         }
@@ -205,37 +226,18 @@ export class ContentComponent implements OnInit {
         this.apiService.getLoggedInUser().subscribe((response: IUserContactInfo) => { }
             , (error) => {
                 if (error.status === 401) {
-                    // Handle the 401 Unauthorized error here
                     this.chromeService.setStorageData({ token: "" });
-                    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-                        chrome.tabs.reload(tabs[0].id || 0);
+                        chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+                        chrome.tabs.reload(tabs[0]?.id || 0);
                     });
-                } else {
-                    // Handle other errors
-                    console.error('An error occurred:', error);
-                }
+                } else { }
             }
         );
     }
 
-
-    async ngOnInit(): Promise<void> {
-        this.getLocData = await this.chromeService.getStorageData();
-        this.getLoggedInUser();
-        this.getWorkTypes();
-
-        chrome.tabs.query({ currentWindow: true, active: true }, tabs => {
-            let url: string = tabs[0].url || "";
-            this.chromeService.setStorageData({ url: url });
-            if (this.getLocData?.token) {
-                this.content = url;
-            }
-        });
-
-
+    listenEvents() {
+        /* background listerners for timer start or stop from content script */
         chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-
-            // Check if the message has the data you're expecting
             switch (request.action) {
                 case 'syncStartTimer':
                     this.fetchTimeStamp();
@@ -253,12 +255,38 @@ export class ContentComponent implements OnInit {
                     this.changeDetectorRef.detectChanges(); // Manually trigger change detection
                     break;
 
+                case 'stopTimerAPI':
+                    this.fetchTimeStamp();
+                    this.timerRunning = false;
+                    this.timer = initialTimerValue;
+                    this.intervalSubscription?.unsubscribe();
+                    this.changeDetectorRef.detectChanges(); // Manually trigger change detection
+                    break;
                 default:
                     break;
-
             }
         });
+    }
 
+    async ngOnInit(): Promise<void> {
+        this.getLocData = await this.chromeService.getStorageData();
+        this.selectedValues = this.getLocData.selectedValues ?? enumChangeList;
+    
+        this.getTimers;
+        this.getTimeTrackingSetting();
+        this.getLoggedInUser();
+        this.getWorkTypes();
+
+        /* fetch current window, this code can be written for accessing only github url only */
+        chrome.tabs.query({ currentWindow: true, active: true }, tabs => {
+            let url: string = tabs[0].url || "";
+            this.chromeService.setStorageData({ url : url });
+            if (this.getLocData?.token) {
+                this.content = url;
+            }
+        });
+        
+        this.listenEvents();
         this.fetchTimeStamp();
     }
 }

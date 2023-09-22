@@ -26,11 +26,10 @@ export interface ITimeDifference {
 export interface IProject {
     id: string,
     name: string,
-    isBillableByDefault: boolean
-}
-export interface ITask {
-    id: string,
-    name: string
+    isBillableByDefault: boolean,
+    projectStatus:{
+        type : string
+    }
 }
 
 export interface ITask {
@@ -54,7 +53,9 @@ export interface ITimeEntry {
     startTimeLocal: string,
     endTimeLocal: string,
     duration: string | number,
-    note: string
+    note: string,
+    startDateLocal : string,
+    endDateLocal : string
 }
 
 export interface IStartTimeBody {
@@ -67,12 +68,13 @@ export interface IStartTimeBody {
     timezone: string
 }
 export interface ILocalData {
-    select_project_value?: string,
-    select_task_value?: string,
-    select_workType_value?: string,
     running_time?: boolean,
     timer_start_time?: number,
-    token?: string
+    token?: string,
+    defaultProject?:string
+    selectedValues? : ISelectedValues
+    note?:string
+    projectStatus?:string
 }
 export interface IAllowedSites {
     [key: string]: ISiteObject
@@ -90,4 +92,16 @@ export interface IAccessTokenBody {
 
 export interface IUserContactInfo {
     userContactInfos: { value: string }[]
+}
+
+export interface IProjectDetail {
+    projectStatus : {
+        type : string
+    }
+}
+
+export interface ITimeTrackingSetting {
+    preventDoneProjects : boolean,
+    preventPrivate : boolean,
+    trackingLimit : boolean,
 }

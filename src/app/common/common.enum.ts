@@ -1,4 +1,4 @@
-import { ISelectedValues, IList, ITime, ITimeDifference } from "./common.interface";
+import { ISelectedValues, IList, ITime, ITimeDifference, IProjectDetail,ITimeTrackingSetting } from "./common.interface";
 
 export const enumList : IList = {
     projects : [],
@@ -27,3 +27,14 @@ export const enumTimeDifference : ITimeDifference = {
 
 export const initialTimerValue: string = '00:00:00';
 
+export const enumProjectDetail : IProjectDetail = {
+    projectStatus : {
+       type : ''
+    }
+}
+
+export const enumTimeTrackingSetting : ITimeTrackingSetting = {
+    preventDoneProjects : false,
+    preventPrivate : false,
+    trackingLimit : false,
+}
