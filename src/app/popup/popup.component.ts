@@ -3,9 +3,9 @@ import { environment } from 'src/environments/environment';
 import { LoginComponent } from './components/auth/auth.component';
 import { TimerComponent } from './components/timer/timer.component';
 import { NgIf, NgTemplateOutlet } from '@angular/common';
-import { ChromeStorageService } from '../services/chromeService.service';
-import { ApiService } from '../services/api.service';
-import { IGetToken } from '../common/common.interface';
+import { ChromeStorageService } from 'src/app/services/chromeService.service';
+import { ApiService } from 'src/app/services/api.service';
+import { IGetToken } from 'src/app/common/common.interface';
 
 @Component({
     standalone: true,
@@ -24,7 +24,7 @@ export class PopupComponent implements AfterViewInit {
     /* login button click listener */
     toggleLogin() {
         //open awork login page
-        chrome.runtime.sendMessage({ action: 'login-init' })
+        chrome.runtime.sendMessage({ action: 'login-init' , clientId : `${environment.awork.clientId}` , url: `${environment.awork.url}`  })
     }
 
     fetchAccessToken(authorizationCode: string) {

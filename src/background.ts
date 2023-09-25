@@ -3,14 +3,14 @@ type allowedSitesType = { [key: string]: { [key: string]: boolean } }
 
 
 /* stop timer fetch request api */
-async function fetchDataFromAPI(maxDuration: number) {
+async function fetchDataFromAPI(maxDuration: number,url:string) {
 
     const data = await chrome.storage.local.get();
     const token = data["token"];
 
     setTimeout(async () => {
         try {
-            const response = await fetch('https://api.awork.com/api/v1/me/timetracking/stop', {
+            const response = await fetch(`${url}/me/timetracking/stop`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -87,13 +87,14 @@ chrome.runtime.onMessage.addListener((request, sender, senderResponse) => {
             });
             break;
 
-        case 'time-tracking-limit':
+        case 'timeTrackingLimit':
             const maxDuration = request.data;
+            const url = request.url;
             /* Check if maxDuration is zero and call stopTimer if true */
             if (maxDuration === -1) {
                 chrome.runtime.sendMessage({ action: 'stopTimer' });
             } else {
-                fetchDataFromAPI(maxDuration); // Call fetchDataFromAPI function
+                fetchDataFromAPI(maxDuration,url); // Call fetchDataFromAPI function
             }
             break;
 
@@ -133,9 +134,7 @@ chrome.runtime.onMessage.addListener((request, sender, senderResponse) => {
 
         case 'login-init':
             const redirectUri = chrome.identity.getRedirectURL();
-            const clientId = 'aw-browser-extension'
-
-            const auth_url = `https://api.awork.io/api/v1/accounts/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=offline_access&response_type=code&grant_type=authorization_code`;
+            const auth_url = `${request.url}/accounts/authorize?client_id=${request.clientId}&redirect_uri=${redirectUri}&scope=offline_access&response_type=code&grant_type=authorization_code`;
             chrome.identity.launchWebAuthFlow({ url: auth_url, interactive: true }, (redirect_Url) => {
                 if (chrome.runtime?.lastError || !redirect_Url) {
                     console.error('Authorization failed:', chrome.runtime?.lastError);

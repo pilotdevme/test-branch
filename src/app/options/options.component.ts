@@ -1,10 +1,10 @@
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { ChromeStorageService } from '../services/chromeService.service';
-import { ApiService } from '../services/api.service';
-import { ISiteObject, IList, IProject, IUserContactInfo, ITimeTrackingSetting } from '../common/common.interface';
-import { enumList, enumTimeTrackingSetting } from '../common/common.enum';
+import { ChromeStorageService } from 'src/app/services/chromeService.service';
+import { ApiService } from 'src/app/services/api.service';
+import { ISiteObject, IList, IProject, IUserContactInfo, ITimeTrackingSetting } from 'src/app/common/common.interface';
+import { enumList, enumTimeTrackingSetting } from 'src/app/common/common.enum';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 @Component({
     standalone: true,

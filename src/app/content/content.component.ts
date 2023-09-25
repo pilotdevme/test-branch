@@ -1,12 +1,13 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Component, ViewEncapsulation, OnInit, ChangeDetectorRef } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import { ApiService } from '../services/api.service';
+import { ApiService } from 'src/app/services/api.service';
 import { interval, Subscription } from 'rxjs';
-import { ChromeStorageService } from '../services/chromeService.service';
-import { CommonService } from '../services/common.service';
+import { ChromeStorageService } from 'src/app/services/chromeService.service';
+import { CommonService } from 'src/app/services/common.service';
 import { NgIf } from '@angular/common';
-import { initialTimerValue, enumTimeDifference, enumTime, enumChangeList, enumTimeTrackingSetting } from '../common/common.enum';
-import { ITimeEntry, ITimeDifference, ILocalData, ITime, IWorkType, IUserContactInfo, ISelectedValues, IStartTimeBody, ITimeTrackingSetting } from '../common/common.interface';
+import { environment } from 'src/environments/environment';
+import { initialTimerValue, enumTimeDifference, enumTime, enumChangeList, enumTimeTrackingSetting } from 'src/app/common/common.enum';
+import { ITimeEntry, ITimeDifference, ILocalData, ITime, IWorkType, IUserContactInfo, ISelectedValues, IStartTimeBody, ITimeTrackingSetting } from 'src/app/common/common.interface';
 
 /*
  * 'ViewEncapsulation.None' is used to set page body margins to 0 for this component.
@@ -25,11 +26,12 @@ import { ITimeEntry, ITimeDifference, ILocalData, ITime, IWorkType, IUserContact
 })
 export class ContentComponent implements OnInit {
     content: string = '';
-    constructor(private apiService: ApiService,
-
-    private chromeService: ChromeStorageService,
-    private changeDetectorRef: ChangeDetectorRef,
-    private commonService: CommonService) { }
+    constructor(
+        private apiService: ApiService,
+        private chromeService: ChromeStorageService,
+        private changeDetectorRef: ChangeDetectorRef,
+        private commonService: CommonService
+        ) { }
 
     public selectedValues: ISelectedValues = enumChangeList;
     public workTypes: IWorkType[] = [];
@@ -40,15 +42,15 @@ export class ContentComponent implements OnInit {
     private getLocData: ILocalData = {};
     private time: ITime = enumTime;
     private intervalSubscription !: Subscription;
-    private calculatedData: number = 0;
-    private timeTrackingSetting : ITimeTrackingSetting = enumTimeTrackingSetting;
-    
+    private calculatedTime: number = 0;
+    private timeTrackingSetting: ITimeTrackingSetting = enumTimeTrackingSetting;
+
     /* get time entries */
     getTimers() {
         try {
             this.apiService.getTimeEntries().subscribe((response: ITimeEntry[]) => {
                 this.timeEntries = response.slice(0, 4);
-                this.calculatedData = this.commonService.getCalculateTrackingTime(response);
+                this.calculatedTime = this.commonService.getCalculateTrackingTime(response);
                 this.changeDetectorRef.detectChanges(); // Manually trigger change detection
             }, (error) => {
                 if (error.status === 401) {
@@ -71,20 +73,10 @@ export class ContentComponent implements OnInit {
         });
     }
 
-     /* get time tracking setting */
-     getTimeTrackingSetting() {
-        this.apiService.timeTrackingSettings().subscribe((response: any) => { 
-        response.forEach((setting:any) => {
-            if(setting.type === "prevent-on-done-projects"){
-                this.timeTrackingSetting.preventDoneProjects = setting.enabled;
-            }
-            if(setting.type === "time-tracking-limit"){
-                this.timeTrackingSetting.trackingLimit = setting.enabled;
-            }
-            if(setting.type === "prevent-private"){
-                this.timeTrackingSetting.preventPrivate = setting.enabled;
-            }
-        });
+    /* get time tracking setting */
+    getTimeTrackingSetting() {
+        this.apiService.timeTrackingSettings().subscribe((response: any) => {
+            this.timeTrackingSetting = this.commonService.timeTrackingSettingCase(response);
         }, (error) => {
             if (error.status === 401) {
                 this.chromeService.setStorageData({ token: "" });
@@ -104,7 +96,7 @@ export class ContentComponent implements OnInit {
         this.selectedValues.task && (body["taskId"] = this.selectedValues.task);
         this.selectedValues.project && (body["projectId"] = this.selectedValues.project);
         this.apiService.startTimeEntry(body).subscribe((response: ITimeEntry) => {
-            
+
             this.timerRunning = true;
             this.chromeService.setStorageData({ running_time: this.timerRunning });
             this.chromeService.setStorageData({ timer_start_time: response?.startTimeLocal });
@@ -122,11 +114,11 @@ export class ContentComponent implements OnInit {
                 this.chromeService.setStorageData({ token: "" });
                 window.location.reload();
             } else { }
-        }); 
+        });
         this.changeDetectorRef.detectChanges(); // Manually trigger change detection 
         chrome.runtime.sendMessage({ action: 'timerStart' })
-        if(this.timeTrackingSetting.trackingLimit === true){
-            chrome.runtime.sendMessage({ action: 'time-tracking-limit', data: this.calculatedData })
+        if (this.timeTrackingSetting.trackingLimit === true) {
+            chrome.runtime.sendMessage({ action: 'timeTrackingLimit', data: this.calculatedTime, url: `${environment.awork.url}` })
         }
     }
 
@@ -227,7 +219,7 @@ export class ContentComponent implements OnInit {
             , (error) => {
                 if (error.status === 401) {
                     this.chromeService.setStorageData({ token: "" });
-                        chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+                    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
                         chrome.tabs.reload(tabs[0]?.id || 0);
                     });
                 } else { }
@@ -271,7 +263,7 @@ export class ContentComponent implements OnInit {
     async ngOnInit(): Promise<void> {
         this.getLocData = await this.chromeService.getStorageData();
         this.selectedValues = this.getLocData.selectedValues ?? enumChangeList;
-    
+
         this.getTimers;
         this.getTimeTrackingSetting();
         this.getLoggedInUser();
@@ -280,12 +272,12 @@ export class ContentComponent implements OnInit {
         /* fetch current window, this code can be written for accessing only github url only */
         chrome.tabs.query({ currentWindow: true, active: true }, tabs => {
             let url: string = tabs[0].url || "";
-            this.chromeService.setStorageData({ url : url });
+            this.chromeService.setStorageData({ url: url });
             if (this.getLocData?.token) {
                 this.content = url;
             }
         });
-        
+
         this.listenEvents();
         this.fetchTimeStamp();
     }

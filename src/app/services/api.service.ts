@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { environment } from "src/environments/environment";
-import { IGetToken, IProject, IStartTimeBody, ITask, ITimeEntry, IUserContactInfo, IWorkType } from "../common/common.interface";
-import { IAccessTokenBody } from "../common/common.interface";
+import { IGetToken, IProject, IStartTimeBody, ITask, ITimeEntry, IUserContactInfo, IWorkType } from "src/app/common/common.interface";
+import { IAccessTokenBody } from "src/app/common/common.interface";
 import { ChromeStorageService } from "./chromeService.service";
 @Injectable({
     providedIn: 'root'

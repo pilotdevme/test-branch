@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { NgIf, NgFor, NgTemplateOutlet } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import moment from "moment";
+import { environment } from 'src/environments/environment';
 import { interval, Subscription } from 'rxjs';
 import { ApiService } from '../../../services/api.service';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -38,10 +39,10 @@ export class TimerComponent implements OnInit {
     private timeDifference: ITimeDifference = enumTimeDifference;
     private getLocData: ILocalData = {};
     private time: ITime = enumTime;
-    private calculatedData: number = 0;
+    private calculatedTime: number = 0;
     private defaultProject: string = '';
-    private timeTrackingSetting : ITimeTrackingSetting = enumTimeTrackingSetting;
-    
+    private timeTrackingSetting: ITimeTrackingSetting = enumTimeTrackingSetting;
+
     constructor(
         private apiService: ApiService,
         private chromeService: ChromeStorageService,
@@ -58,7 +59,7 @@ export class TimerComponent implements OnInit {
         try {
             this.apiService.getTimeEntries().subscribe((response: ITimeEntry[]) => {
                 this.timeEntries = response.slice(0, 4);
-                this.calculatedData = this.commonService.getCalculateTrackingTime(response);
+                this.calculatedTime = this.commonService.getCalculateTrackingTime(response);
                 this.changeDetectorRef.detectChanges(); // Manually trigger change detection
             }, (error) => {
                 if (error.status === 401) {
@@ -94,10 +95,9 @@ export class TimerComponent implements OnInit {
             chrome.runtime.sendMessage({ action: 'syncStartTimer' })
             this.changeDetectorRef.detectChanges(); // Manually trigger change detection
             chrome.runtime.sendMessage({ action: 'timerStart' })
-            if(this.timeTrackingSetting.trackingLimit === true){
-                chrome.runtime.sendMessage({ action: 'time-tracking-limit', data: this.calculatedData })
+            if (this.timeTrackingSetting.trackingLimit === true) {
+                chrome.runtime.sendMessage({ action: 'timeTrackingLimit', data: this.calculatedTime, url: `${environment.awork.url}` })
             }
-
         }, (error) => {
             if (error.status === 401) {
                 this.handleLogout.emit(true);
@@ -155,20 +155,10 @@ export class TimerComponent implements OnInit {
         });
     }
 
- /* get time tracking setting */
+    /* get time tracking setting */
     getTimeTrackingSetting() {
-        this.apiService.timeTrackingSettings().subscribe((response: any) => { 
-        response.forEach((setting:any) => {
-            if(setting.type === "prevent-on-done-projects"){
-                this.timeTrackingSetting.preventDoneProjects = setting.enabled;
-            }
-            if(setting.type === "time-tracking-limit"){
-                this.timeTrackingSetting.trackingLimit = setting.enabled;
-            }
-            if(setting.type === "prevent-private"){
-                this.timeTrackingSetting.preventPrivate = setting.enabled;
-            }
-        });
+        this.apiService.timeTrackingSettings().subscribe((response: any) => {
+            this.timeTrackingSetting = this.commonService.timeTrackingSettingCase(response);
         }, (error) => {
             if (error.status === 401) {
                 this.handleLogout.emit(true);
@@ -187,9 +177,9 @@ export class TimerComponent implements OnInit {
                     label: project.name,
                     icon: "bell"
                 }));
-                const defaultProjectStatus = this.list.projects.find((v)=> v.id === this.defaultProject)  ?? enumProjectDetail ;
-                if(defaultProjectStatus.projectStatus.type === "closed"){
-                    if(this.timeTrackingSetting.preventDoneProjects === true){
+                const defaultProjectStatus = this.list.projects.find((v) => v.id === this.defaultProject) ?? enumProjectDetail;
+                if (defaultProjectStatus.projectStatus.type === "closed") {
+                    if (this.timeTrackingSetting.preventDoneProjects === true) {
                         this.isButtonDisabled = true;
                     }
                     else {
@@ -204,12 +194,12 @@ export class TimerComponent implements OnInit {
                 }
                 this.changeDetectorRef.detectChanges()
             },
-            (error) => {
-                if (error.status === 401) {
-                    this.handleLogout.emit(true);
-                    this.chromeService.setStorageData({ token: "" });
-                } else { }
-            });
+                (error) => {
+                    if (error.status === 401) {
+                        this.handleLogout.emit(true);
+                        this.chromeService.setStorageData({ token: "" });
+                    } else { }
+                });
     }
 
     /* get task lists according to projects list */
@@ -248,21 +238,14 @@ export class TimerComponent implements OnInit {
             /* prevent time tracking on done projects */
             if (projectDetail.projectStatus.type === "closed") {
                 this.chromeService.setStorageData({ projectStatus: projectDetail.projectStatus.type });
-                if(this.timeTrackingSetting.preventDoneProjects === true){                    
-                    this.isButtonDisabled = true;
-                }
+                this.isButtonDisabled = this.timeTrackingSetting.preventDoneProjects === true;
             } else {
                 this.chromeService.setStorageData({ projectStatus: '' });
                 this.isButtonDisabled = false;
             }
 
             /* prevent time tracking on private projects */
-            if(this.timeTrackingSetting.preventPrivate === true){                    
-                 this.isButtonDisabled = true;               
-            } else {
-                this.chromeService.setStorageData({ projectStatus: '' });
-                this.isButtonDisabled = false;
-            }
+            this.isButtonDisabled = this.timeTrackingSetting.preventPrivate === true;
 
             this.selectedValues.project = selectedProject;
             this.chromeService.setStorageData({ selectedValues: this.selectedValues });
@@ -354,8 +337,8 @@ export class TimerComponent implements OnInit {
         /* stored note */
         this.note = this.getLocData?.note ?? '';
 
-        this.selectedValues = this.getLocData.selectedValues ?? enumChangeList;      
-        this.defaultProject =  this.getLocData?.defaultProject ?? '';
+        this.selectedValues = this.getLocData.selectedValues ?? enumChangeList;
+        this.defaultProject = this.getLocData?.defaultProject ?? '';
 
         if (this.defaultProject) {
             this.getTasks();
@@ -388,7 +371,7 @@ export class TimerComponent implements OnInit {
         this.getProjects();
         this.getWorkTypes();
         this.fetchTimeStamp();
-        this.getTimeTrackingSetting();   
+        this.getTimeTrackingSetting();
     }
 
     /*on mounted function*/

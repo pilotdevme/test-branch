@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import moment from 'moment';
-import { ITimeEntry } from '../common/common.interface';
+import { ITimeEntry, ITimeTrackingSetting } from '../common/common.interface';
+import { enumTimeTrackingSetting } from '../common/common.enum';
 
 @Injectable({
     providedIn: 'root'
@@ -8,6 +9,7 @@ import { ITimeEntry } from '../common/common.interface';
 export class CommonService {
     constructor() { }
     public timeEntries: ITimeEntry[] = [];
+    private timeTrackingSetting : ITimeTrackingSetting = enumTimeTrackingSetting;
 
     /* calculate time, hours mintues and seconds */
     calculateTimeDifference(time: number) {
@@ -88,8 +90,8 @@ export class CommonService {
         const TotalMilliseconds = 10 * 60 * 60 * 1000;
         const TrackingMilliseconds = Math.max(0, ((totalHours * 3600 + totalMinutes * 60 + totalSeconds) * 1000));
 
-        const calculatedData = TotalMilliseconds - TrackingMilliseconds;
-        return  calculatedData
+        const calculatedTime = TotalMilliseconds - TrackingMilliseconds;
+        return  calculatedTime
     }
 
     /*Function to calculate the time difference between start and end times for today entries only*/
@@ -106,5 +108,21 @@ export class CommonService {
             example: converting '9' to '09'
         */
         return timeValue.toString().padStart(2, '0');
+    }
+
+    timeTrackingSettingCase(response:any){
+        const timeTrackingSetting : ITimeTrackingSetting = enumTimeTrackingSetting;
+        response.forEach((setting:any) => {
+            if(setting.type === "prevent-on-done-projects"){
+                timeTrackingSetting.preventDoneProjects = setting.enabled;
+            }
+            if(setting.type === "time-tracking-limit"){
+                timeTrackingSetting.trackingLimit = setting.enabled;
+            }
+            if(setting.type === "prevent-private"){
+                timeTrackingSetting.preventPrivate = setting.enabled;
+            }
+        });
+        return timeTrackingSetting;
     }
 }
