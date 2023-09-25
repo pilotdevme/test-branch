@@ -83,10 +83,7 @@ export class CommonService {
         /* Calculate total hours and minutes from the accumulated minutes */
         totalHours += Math.floor(totalMinutes / 60);
         totalMinutes %= 60;
-
-        /* Log the total time */
-        console.log(`Total Time: ${totalHours} hours, ${totalMinutes} minutes, ${totalSeconds} seconds`);
-
+        
         /* 10 hours limit convert in miliiseconds */
         const TotalMilliseconds = 10 * 60 * 60 * 1000;
         const TrackingMilliseconds = Math.max(0, ((totalHours * 3600 + totalMinutes * 60 + totalSeconds) * 1000));

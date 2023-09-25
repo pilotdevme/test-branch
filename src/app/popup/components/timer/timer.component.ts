@@ -181,8 +181,6 @@ export class TimerComponent implements OnInit {
     getProjects() {
         this.apiService.getProjects()
             .subscribe((response: IProject[]) => {
-                console.log(response,"projects");
-                
                 this.list.projects = response;
                 const dropdownOptions = this.list.projects.map(project => ({
                     value: project.id,

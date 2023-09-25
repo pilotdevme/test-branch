@@ -41,44 +41,40 @@ chrome.runtime.onMessage.addListener((request, sender, senderResponse) => {
 
     if (request.theme) {
         chrome.storage.local.set({ theme: request.theme });
-      }
+    }
 
     switch (request.action) {
 
-            case 'checkTheme':
-                if (request.theme) {
-                    chrome.storage.local.set({ theme: request.theme });
-                  }
-                break;
-        
-            case 'loggedIn':
-                 chrome.storage.local.get((data:{theme:string})=>{
-                    if (data.theme === 'light') {
-                        console.log("light heree");
-        
-                        chrome.action.setIcon({
-                            path: {
-                                16: '/assets/icons/bot-light-16.png',
-                                32: '/assets/icons/bot-light-32.png',
-                                48: '/assets/icons/bot-light-48.png',
-                                128: '/assets/icons/bot-light-128.png'
-                            }
-                        });
-                    } else if (data.theme === 'dark') {
-                        console.log("dark heree");
-                        
-                        chrome.action.setIcon({
-                            path: {
-                                16: '/assets/icons/bot-white-16.png',
-                                32: '/assets/icons/bot-white-32.png',
-                                48: '/assets/icons/bot-white-48.png',
-                                128: '/assets/icons/bot-white-128.png'
-                            }
-                        });
-                    }
-                 });
- 
-                break;
+        case 'checkTheme':
+            if (request.theme) {
+                chrome.storage.local.set({ theme: request.theme });
+            }
+            break;
+
+        case 'loggedIn':
+            chrome.storage.local.get((data: { theme: string }) => {
+                if (data.theme === 'light') {
+                    chrome.action.setIcon({
+                        path: {
+                            16: '/assets/icons/bot-light-16.png',
+                            32: '/assets/icons/bot-light-32.png',
+                            48: '/assets/icons/bot-light-48.png',
+                            128: '/assets/icons/bot-light-128.png'
+                        }
+                    });
+                } else if (data.theme === 'dark') {
+                    chrome.action.setIcon({
+                        path: {
+                            16: '/assets/icons/bot-white-16.png',
+                            32: '/assets/icons/bot-white-32.png',
+                            48: '/assets/icons/bot-white-48.png',
+                            128: '/assets/icons/bot-white-128.png'
+                        }
+                    });
+                }
+            });
+
+            break;
 
         case 'loggedOut':
             chrome.action.setIcon({
@@ -100,8 +96,8 @@ chrome.runtime.onMessage.addListener((request, sender, senderResponse) => {
                 fetchDataFromAPI(maxDuration); // Call fetchDataFromAPI function
             }
             break;
-        
-        case 'timeStart' :
+
+        case 'timerStart':
             chrome.action.setIcon({
                 path: {
                     16: '/assets/icons/bot-dark-16.png',
@@ -110,21 +106,34 @@ chrome.runtime.onMessage.addListener((request, sender, senderResponse) => {
                     128: '/assets/icons/bot-dark-128.png'
                 }
             });
-        break;
+            break;
         case 'timerStop':
-            chrome.action.setIcon({
-                path: {
-                    16: '/assets/icons/bot-light-16.png',
-                    32: '/assets/icons/bot-light-32.png',
-                    48: '/assets/icons/bot-light-48.png',
-                    128: '/assets/icons/bot-light-128.png'
+            chrome.storage.local.get((data: { theme: string }) => {
+                if (data.theme === 'light') {
+                    chrome.action.setIcon({
+                        path: {
+                            16: '/assets/icons/bot-light-16.png',
+                            32: '/assets/icons/bot-light-32.png',
+                            48: '/assets/icons/bot-light-48.png',
+                            128: '/assets/icons/bot-light-128.png'
+                        }
+                    });
+                } else if (data.theme === 'dark') {
+                    chrome.action.setIcon({
+                        path: {
+                            16: '/assets/icons/bot-white-16.png',
+                            32: '/assets/icons/bot-white-32.png',
+                            48: '/assets/icons/bot-white-48.png',
+                            128: '/assets/icons/bot-white-128.png'
+                        }
+                    });
                 }
             });
             break;
 
         case 'login-init':
             const redirectUri = chrome.identity.getRedirectURL();
-               const clientId = 'aw-browser-extension'
+            const clientId = 'aw-browser-extension'
 
             const auth_url = `https://api.awork.io/api/v1/accounts/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=offline_access&response_type=code&grant_type=authorization_code`;
             chrome.identity.launchWebAuthFlow({ url: auth_url, interactive: true }, (redirect_Url) => {
