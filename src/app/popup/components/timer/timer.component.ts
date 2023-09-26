@@ -11,7 +11,7 @@ import { ChromeStorageService } from 'src/app/services/chromeService.service';
 import { CommonService } from 'src/app/services/common.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ISelectedValues, IList, ITime, ITimeDifference, ITimeEntry, ILocalData, IProject, IWorkType, ITask, IStartTimeBody, ITimeTrackingSetting } from 'src/app/common/common.interface';
-import { enumChangeList, enumList, enumTime, enumTimeDifference, initialTimerValue, enumProjectDetail, enumTimeTrackingSetting } from 'src/app/common/common.enum';
+import { enumChangeList, enumList, enumTime, enumTimeDifference, initialTimerValue, enumProjectDetail, enumTimeTrackingSetting, POPUP_ENTRIES } from 'src/app/common/common.enum';
 
 @Component({
     standalone: true,
@@ -58,14 +58,14 @@ export class TimerComponent implements OnInit {
     getTimers() {
         try {
             this.apiService.getTimeEntries().subscribe((response: ITimeEntry[]) => {
-                this.timeEntries = response.slice(0, 4);
+                this.timeEntries = response.slice(0, POPUP_ENTRIES); //Getting first entries to show in the popup
                 this.calculatedTime = this.commonService.getCalculateTrackingTime(response);
                 this.changeDetectorRef.detectChanges(); // Manually trigger change detection
             }, (error) => {
                 if (error.status === 401) {
                     this.handleLogout.emit(true);
                     this.chromeService.setStorageData({ token: "" });
-                } else { }
+                } 
             });
         }
         catch (e) { }
@@ -102,7 +102,7 @@ export class TimerComponent implements OnInit {
             if (error.status === 401) {
                 this.handleLogout.emit(true);
                 this.chromeService.setStorageData({ token: "" });
-            } else { }
+            } 
         });
     }
 
@@ -130,7 +130,7 @@ export class TimerComponent implements OnInit {
             if (error.status === 401) {
                 this.handleLogout.emit(true);
                 this.chromeService.setStorageData({ token: "" });
-            } else { }
+            } 
         });
     }
 
@@ -151,7 +151,7 @@ export class TimerComponent implements OnInit {
             if (error.status === 401) {
                 this.handleLogout.emit(true);
                 this.chromeService.setStorageData({ token: "" });
-            } else { }
+            } 
         });
     }
 
@@ -163,7 +163,7 @@ export class TimerComponent implements OnInit {
             if (error.status === 401) {
                 this.handleLogout.emit(true);
                 this.chromeService.setStorageData({ token: "" });
-            } else { }
+            } 
         });
     }
 
@@ -198,7 +198,7 @@ export class TimerComponent implements OnInit {
                     if (error.status === 401) {
                         this.handleLogout.emit(true);
                         this.chromeService.setStorageData({ token: "" });
-                    } else { }
+                    } 
                 });
     }
 
@@ -219,7 +219,7 @@ export class TimerComponent implements OnInit {
             if (error.status === 401) {
                 this.handleLogout.emit(true);
                 this.chromeService.setStorageData({ token: " " });
-            } else { }
+            } 
         }
         );
     }

@@ -6,7 +6,7 @@ import { ChromeStorageService } from 'src/app/services/chromeService.service';
 import { CommonService } from 'src/app/services/common.service';
 import { NgIf } from '@angular/common';
 import { environment } from 'src/environments/environment';
-import { initialTimerValue, enumTimeDifference, enumTime, enumChangeList, enumTimeTrackingSetting } from 'src/app/common/common.enum';
+import { initialTimerValue, enumTimeDifference, enumTime, enumChangeList, enumTimeTrackingSetting, POPUP_ENTRIES } from 'src/app/common/common.enum';
 import { ITimeEntry, ITimeDifference, ILocalData, ITime, IWorkType, IUserContactInfo, ISelectedValues, IStartTimeBody, ITimeTrackingSetting } from 'src/app/common/common.interface';
 
 /*
@@ -49,13 +49,13 @@ export class ContentComponent implements OnInit {
     getTimers() {
         try {
             this.apiService.getTimeEntries().subscribe((response: ITimeEntry[]) => {
-                this.timeEntries = response.slice(0, 4);
+                this.timeEntries = response.slice(0, POPUP_ENTRIES); //Getting first entries to show in the popup
                 this.calculatedTime = this.commonService.getCalculateTrackingTime(response);
                 this.changeDetectorRef.detectChanges(); // Manually trigger change detection
             }, (error) => {
                 if (error.status === 401) {
                     this.chromeService.setStorageData({ token: "" });
-                } else { }
+                }
             });
         }
         catch (e) { }
@@ -69,7 +69,7 @@ export class ContentComponent implements OnInit {
             if (error.status === 401) {
                 this.chromeService.setStorageData({ token: "" })
                 window.location.reload();
-            } else { }
+            }
         });
     }
 
@@ -80,7 +80,7 @@ export class ContentComponent implements OnInit {
         }, (error) => {
             if (error.status === 401) {
                 this.chromeService.setStorageData({ token: "" });
-            } else { }
+            }
         });
     }
 
@@ -113,7 +113,7 @@ export class ContentComponent implements OnInit {
             if (error.status === 401) {
                 this.chromeService.setStorageData({ token: "" });
                 window.location.reload();
-            } else { }
+            }
         });
         this.changeDetectorRef.detectChanges(); // Manually trigger change detection 
         chrome.runtime.sendMessage({ action: 'timerStart' })
@@ -144,7 +144,7 @@ export class ContentComponent implements OnInit {
             if (error.status === 401) {
                 this.chromeService.setStorageData({ token: "" });
                 window.location.reload();
-            } else { }
+            }
         });
     }
 
@@ -222,7 +222,7 @@ export class ContentComponent implements OnInit {
                     chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
                         chrome.tabs.reload(tabs[0]?.id || 0);
                     });
-                } else { }
+                }
             }
         );
     }
@@ -260,7 +260,7 @@ export class ContentComponent implements OnInit {
         });
     }
 
-    async ngOnInit(): Promise<void> {
+    async loadAllData() {
         this.getLocData = await this.chromeService.getStorageData();
         this.selectedValues = this.getLocData.selectedValues ?? enumChangeList;
 
@@ -268,6 +268,8 @@ export class ContentComponent implements OnInit {
         this.getTimeTrackingSetting();
         this.getLoggedInUser();
         this.getWorkTypes();
+        this.listenEvents();
+        this.fetchTimeStamp();
 
         /* fetch current window, this code can be written for accessing only github url only */
         chrome.tabs.query({ currentWindow: true, active: true }, tabs => {
@@ -277,8 +279,9 @@ export class ContentComponent implements OnInit {
                 this.content = url;
             }
         });
+    }
 
-        this.listenEvents();
-        this.fetchTimeStamp();
+   ngOnInit() {
+        this.loadAllData()
     }
 }

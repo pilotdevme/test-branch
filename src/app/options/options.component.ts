@@ -68,7 +68,7 @@ export class OptionsComponent implements OnInit {
         }, (error) => {
             if (error.status === 401) {
                 this.isLoggedIn = false;
-            } else { }
+            } 
         }
         );
     }
@@ -82,7 +82,7 @@ export class OptionsComponent implements OnInit {
         }, (error) => {
             if (error.status === 401) {
                 this.isLoggedIn = false;
-            } else { }
+            } 
         }
         );
     }
@@ -103,7 +103,7 @@ export class OptionsComponent implements OnInit {
         }, (error) => {
             if (error.status === 401) {
                 this.isLoggedIn = false;
-            } else { }
+            } 
         }
         );
     }

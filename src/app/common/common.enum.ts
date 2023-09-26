@@ -38,3 +38,5 @@ export const enumTimeTrackingSetting : ITimeTrackingSetting = {
     preventPrivate : false,
     trackingLimit : false,
 }
+
+export const POPUP_ENTRIES  = 4
