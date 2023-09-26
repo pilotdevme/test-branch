@@ -187,15 +187,22 @@ $content-width: calc(100% - 40px);
     height: 100vh;
 }
 
-/* need to unset the width for long text in the dropdown */
+/* need to unset the width for long text and update color in the dropdown */
 .cdk-overlay-container.popup-overlay-container .popup {
     width: unset !important;
+    color: #5577AA;
 }
 
-/* using ellipsis for long task on select box */
+/* using ellipsis for long task and update color in select box */
 .dropdown-field__button-container span{
     white-space: nowrap;
     overflow: hidden;
     max-width: 50px;
     text-overflow: ellipsis;
+    color: #5576AA;
+}
+
+/* updating color of input fields */
+input{
+    color: #5576AA !important
 }

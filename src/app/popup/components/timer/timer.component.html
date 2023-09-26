@@ -12,11 +12,11 @@
         <!-- current time input feild -->
         <div class="aw-2-mb">
             <aw2-text-field label="{{ 'timer.current_time' | translate }}"
-                placeholder="{{ 'timer.add_note' | translate }}..." (change)="noteChange($event)"></aw2-text-field>
+                placeholder="{{ 'timer.add_note' | translate }}..." (change)="noteChange($event)"
+                [value]="note"></aw2-text-field>
         </div>
 
         <!-- dropdown buttons for project, task and work -->
-
         <div class="aw-2-flx">
             <aw2-dropdown-field id="projectsDropdown" (changed)="projectChange($event)" class="aw-2-drop--custom"
                 label="{{ 'timer.projects' | translate }}"></aw2-dropdown-field>
@@ -43,7 +43,7 @@
         <div class="aw-2-mt">
             <!-- stop interval -->
             <div *ngIf="timerRunning else timerButton">
-                <button (click)="stopTimer();"
+                <button (click)="stopTimer();" [disabled]="isButtonDisabled"
                     class="aw-2-d--block aw-2-w--full aw-2-p--l aw-2-b--radius-l aw-2-b-0 aw-2-btn">
                     <div class="aw-2-flx aw-2-flx--center aw-2-txt--center aw-2-w--full aw-2-flx--content-center ">
                         <img src="/assets/images/stop.svg" alt="stop" />
@@ -56,7 +56,7 @@
 
             <!-- start interval -->
             <ng-template #timerButton>
-                <button
+                <button [disabled]="isButtonDisabled"
                     class="aw-2-d--block aw-2-w--full aw-2-p--l aw-2-b--radius-l aw-2-b-0 aw-2-btn aw-2-start-stop--btn"
                     (click)="startTimer()">
                     <div class="aw-2-flx aw-2-flx--center aw-2-txt--center aw-2-w--full aw-2-flx--content-center ">
@@ -98,7 +98,8 @@
                                     </div>
                                 </div>
                                 <h3 *ngIf="timeEntry?.note" class="aw-2-txt--bold aw-2-txt--m aw-2-project--note">
-                                    ({{timeEntry?.note}})</h3>
+                                    ({{timeEntry?.note}})
+                                </h3>
                             </div>
                         </div>
                         <ng-template #noProject>
@@ -113,8 +114,8 @@
                     <td class="aw-2--progress-bar-width aw-2-py--m aw-2-txt--bold">
                         <div *ngIf="timeEntry?.endTimeLocal else timerNotEnded">
                             {{totalTrackingTime(timeEntry)}}
-                            <mat-progress-bar mode="determinate" class="progress_bar"
-                                value={{timeEntry?.duration}}></mat-progress-bar>
+                            <mat-progress-bar mode="determinate" class="progress_bar" value={{timeEntry?.duration}}>
+                            </mat-progress-bar>
                         </div>
                         <ng-template #timerNotEnded>
                             {{ 'timer.tracking' | translate }}
